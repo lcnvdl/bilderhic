@@ -17,7 +17,7 @@ describe("EnvCommand", () => {
     it("load should add all environment variables", () => {
         cmd.run(["load", "./files/variables.yml"]);
         expect(env.variables.app).to.be.ok;
-        expect(env.variables.app.id).to.equals("com.taxyfleet.drivers");
+        expect(env.variables.app.id).to.equals("com.mydomain.myapp");
     });
 
     it("clear should delete all environment variables", () => {

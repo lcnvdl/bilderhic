@@ -3,6 +3,10 @@ class BaseEditor {
         throw new Error("Not implemented");
     }
 
+    get isObjectEditor() {
+        throw new Error("Not implemented");
+    }
+
     open(name) {
         throw new Error("Not implemented");
     }
