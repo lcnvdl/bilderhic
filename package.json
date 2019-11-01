@@ -1,0 +1,40 @@
+{
+  "name": "node-build",
+  "version": "1.0.0",
+  "description": "NodeBuild is a simple integration tool",
+  "preferGlobal": true,
+  "main": "index.js",
+  "bin": {
+    "node-build": "./index.js"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "example": "node index.js simple.txt ./test/files/",
+    "example:debug": "node index.js simple.txt ./test/files/ -d",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lcnvdl/node-build.git"
+  },
+  "keywords": [
+    "node-build"
+  ],
+  "author": "lcnvdl",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lcnvdl/node-build/issues"
+  },
+  "homepage": "https://github.com/lcnvdl/node-build#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2"
+  },
+  "dependencies": {
+    "fs-extra": "^8.1.0",
+    "inquirer": "^7.0.0",
+    "yaml": "^1.7.2"
+  }
+}

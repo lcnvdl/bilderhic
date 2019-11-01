@@ -1,0 +1,138 @@
+const CommandBase = require("../base/command-base");
+const fs = require('fs');
+const commands = require("../index");
+const inquirer = require('inquirer');
+
+class Pipe extends CommandBase {
+    constructor(env, pipeId) {
+        super();
+        this.pipeId = pipeId || "1";
+        this.environment = env;
+    }
+
+    async loadFromFile(path) {
+        await this.load(fs.readFileSync(this.parsePath(path), "utf8"));
+    }
+
+    /**
+     * @param {string} str Content
+     */
+    async load(str) {
+        this.info(`Running pipe "${this.pipeId}"`);
+
+        await breakpoint(this.environment);
+
+        let instructions = str.split("\n")
+            .map(m => m.trim())
+            .filter(m => m && m !== "")
+            .filter(m => m.indexOf("//") !== 0);
+
+        try {
+            while (instructions.length > 0) {
+                let current = instructions.shift();
+
+                if (current[0] === ":") {
+                    let result = await this._processPipeCommand(current, instructions);
+                    if (result) {
+                        break;
+                    }
+                }
+                else {
+                    let code = await this._processCommand(current);
+                    if (code === this.codes.invalidArguments) {
+                        throw new Error(`Invalid arguments in instruction "${current}".`);
+                    }
+                    else if (code === this.codes.missingArguments) {
+                        throw new Error(`Missing arguments in instruction "${current}".`);
+                    }
+                }
+
+                // await breakpoint(this.environment);
+            }
+        }
+        catch (error) {
+            this.debug(`Pipe "${this.pipeId}" failed`);
+            await breakpoint(this.environment, { error });
+            throw error;
+        }
+
+        this.debug(`Pipe "${this.pipeId}" finished successfully`);
+
+        return this.codes.success;
+    }
+
+    async _processCommand(current) {
+        let cmds = current.split(" ");
+
+        const cmd = cmds.shift();
+
+        /** @type {CommandBase} */
+        let CommandClass = commands[cmd] || commands.run;
+        let command = new CommandClass(this.environment);
+
+        if (!(command instanceof CommandBase)) {
+            throw new Error(`${command} (${current}) is not a Command`);
+        }
+
+        this.info("> " + current);
+        await breakpoint(this.environment);
+
+        let result = command.run(cmds);
+
+        this.debug(" - " + (result === this.codes.invalidArguments ? "Invalid arguments" : (result === this.codes.missingArguments ? "Missing arguments" : "Success")));
+
+        if (result instanceof Promise) {
+            return await result;
+        }
+
+        return result;
+    }
+
+    async _processPipeCommand(current, instructions) {
+        let cmd = current.split(" ");
+
+        if (cmd[0] === ":each") {
+            if (cmd[1] === "folder") {
+                this._pipeCmdEachFolder(instructions);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    _pipeCmdEachFolder(instructions) {
+        let folders = getDirectories(this.environment.cwd);
+        let subPipeId = 1;
+
+        for (let i = 0; i < folders.length; i++) {
+            const pipe = new Pipe(this.environment.fork(folders[i]), this.pipeId + "." + (subPipeId++));
+            pipe.load(instructions.join("\n"));
+        }
+    }
+}
+
+function getDirectories(path) {
+    return fs.readdirSync(path).filter(file => fs.statSync(path + '/' + file).isDirectory());
+}
+
+async function breakpoint(env, message) {
+    if (!env.settings.debug)
+        return;
+
+    if (message) {
+        if (message.error) {
+            console.error(message.error);
+        }
+        else {
+            console.log(message);
+        }
+    }
+
+    let result = await inquirer.prompt([{ name: "Continue", type: "confirm", default: true }]);
+    if (!result.Continue) {
+        throw new Error("Interrupted");
+    }
+}
+
+module.exports = Pipe;

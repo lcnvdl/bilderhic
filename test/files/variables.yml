@@ -1,0 +1,10 @@
+app:
+    id: com.mydomain.myapp
+    version: 1
+    description: Lorem ipsum chupsum.
+    name: My App Name
+author:
+    email: info@mydomain.com
+    url: http://mydomain.com
+    name: Luciano Videla
+ 
