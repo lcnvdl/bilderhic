@@ -1,0 +1,6 @@
+<note id="1">
+    <to active="false">Tove</to>
+    <from>Jani</from>
+    <heading>Reminder</heading>
+    <body>Don't forget me this weekend!</body>
+</note>

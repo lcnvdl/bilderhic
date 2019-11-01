@@ -33,6 +33,7 @@
     "mocha": "^6.2.2"
   },
   "dependencies": {
+    "fast-xml-parser": "^3.14.0",
     "fs-extra": "^8.1.0",
     "inquirer": "^7.0.0",
     "yaml": "^1.7.2"

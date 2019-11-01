@@ -16,6 +16,10 @@ class JsonFileEditor extends BaseEditor {
         this.object = JSON.parse(fs.readFileSync(file, "utf8"));
     }
 
+    set(selector, value) {
+        throw new Error("Not implemented");
+    }
+
     save() {
         this._assertOpen();
         fs.writeFileSync(this.file, JSON.stringify(this.object, null, 2), "utf8");
