@@ -16,9 +16,10 @@ class CommandBase {
 
     get codes() {
         return {
-            missingArguments: -1,
-            invalidArguments: 0,
-            success: 1
+            missingArguments: -2,
+            invalidArguments: -1,
+            success: 0,
+            error: 1
         }
     }
 
@@ -33,7 +34,8 @@ class CommandBase {
             return _path;
         }
         catch (err) {
-            throw new Error(`Error parsing "${_path}". ${err + ""}.`);
+            let msg = "" + (err.error || err.message || err);
+            throw new Error(`Error parsing "${_path}". ${msg + ""}.`);
         }
     }
 
@@ -41,9 +43,14 @@ class CommandBase {
         console.log(msg);
     }
 
-    debug(msg) {
+    debug(msg, obj) {
         if (this.environment.settings.debug || this.environment.settings.verbose) {
-            console.log(msg);
+            if (typeof obj === 'undefined') {
+                console.log(msg);
+            }
+            else {
+                console.log(msg, obj);
+            }
         }
     }
 }

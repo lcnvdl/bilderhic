@@ -1,22 +1,38 @@
-const util = require("util");
-const exec = util.promisify(require("child_process").exec);
-const path = require("path");
-const fs = require("fs");
+const child_process = require("child_process");
 const CommandBase = require("../base/command-base");
 
 class RunCommand extends CommandBase {
-    async run(args) {
-        let command = args.join(" ");
+    run(args) {
+        return new Promise((resolve, reject) => {
+            try {
+                const command = args.join(" ");
+                const child = child_process.exec(command, { cwd: this.environment.cwd });
 
-        const { stdout, stderr } = await exec(command, { cwd: this.environment.cwd });
+                child.stdout.setEncoding('utf8');
+                child.stdout.on('data', function (data) {
+                    data = data.toString();
+                    console.log(data);
+                });
 
-        if (stdout && stdout !== "") {
-            console.log(stdout);
-        }
+                child.stderr.setEncoding('utf8');
+                child.stderr.on('data', function (data) {
+                    data = data.toString();
+                    console.error(data);
+                });
 
-        if (stderr && stderr !== "") {
-            console.error(stderr);
-        }
+                child.on('close', code => {
+                    if (code === 0) {
+                        resolve(this.codes.success);
+                    }
+                    else {
+                        resolve(this.codes.error);
+                    }
+                });
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
     }
 }
 

@@ -1,11 +1,12 @@
 {
-  "name": "node-build",
-  "version": "1.0.0",
-  "description": "NodeBuild is a simple integration tool",
+  "name": "bilderhic",
+  "version": "1.0.11",
+  "description": "Bilderhic (bhic) is a smart and simple build tool",
   "preferGlobal": true,
   "main": "index.js",
   "bin": {
-    "node-build": "./index.js"
+    "bilderhic": "./index.js",
+    "bhic": "./index.js"
   },
   "directories": {
     "test": "test"
@@ -20,7 +21,9 @@
     "url": "git+https://github.com/lcnvdl/node-build.git"
   },
   "keywords": [
-    "node-build"
+    "node-build",
+    "bilderhic",
+    "bhic"
   ],
   "author": "lcnvdl",
   "license": "MIT",

@@ -1,2 +1,2 @@
-# node-build
-NodeBuild is a simple integration tool
+# bilderhic
+Bilderhic is a smart and simple build tool

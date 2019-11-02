@@ -69,7 +69,13 @@ class Pipe extends CommandBase {
         const cmd = cmds.shift();
 
         /** @type {CommandBase} */
-        let CommandClass = commands[cmd] || commands.run;
+        let CommandClass = commands[cmd];
+
+        if (!CommandClass) {
+            cmds.unshift(cmd);
+            CommandClass = commands.run;
+        }
+
         let command = new CommandClass(this.environment);
 
         if (!(command instanceof CommandBase)) {
@@ -95,7 +101,7 @@ class Pipe extends CommandBase {
 
         if (cmd[0] === ":each") {
             if (cmd[1] === "folder") {
-                this._pipeCmdEachFolder(instructions);
+                await this._pipeCmdEachFolder(instructions);
                 return true;
             }
         }
@@ -130,13 +136,16 @@ class Pipe extends CommandBase {
         return false;
     }
 
-    _pipeCmdEachFolder(instructions) {
+    async _pipeCmdEachFolder(instructions) {
         let folders = getDirectories(this.environment.cwd);
         let subPipeId = 1;
 
         for (let i = 0; i < folders.length; i++) {
+            this.debug(`Forking pipe to ${folders[i]}`);
+            await breakpoint(this.environment);
+
             const pipe = new Pipe(this.environment.fork(folders[i]), this.pipeId + "." + (subPipeId++));
-            pipe.load(instructions.join("\n"));
+            await pipe.load(instructions.join("\n"));
         }
     }
 }
@@ -146,6 +155,11 @@ function getDirectories(path) {
 }
 
 async function breakpoint(env, message) {
+    if (!env) {
+        console.warn("Breakpoint without environment. Ignored.");
+        return;
+    }
+
     if (!env.settings.debug)
         return;
 

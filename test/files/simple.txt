@@ -1,3 +1,4 @@
 copy simple.txt test.txt
 ren test.txt text.txt
 del text.txt
+echo Test
