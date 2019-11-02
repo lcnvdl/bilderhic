@@ -33,12 +33,51 @@ class XmlFileEditor extends BaseEditor {
             this.declaration = this.declaration.substr(0, this.declaration.indexOf(">") + 1);
         }
 
-        this.object = parser.parse(content, options);
+        if (!content || content === "") {
+            this.object = {};
+        }
+        else {
+            this.object = parser.parse(content, options);
+        }
     }
 
     load(content) {
         this.file = "";
-        this.object = parser.parse(content, options);
+
+        if (!content || content === "") {
+            this.object = {};
+        }
+        else {
+            this.object = parser.parse(content, options);
+        }
+    }
+
+    add(selector, optionalValue) {
+        let current = this.object;
+        let members = selector.split(">");
+
+        members.slice(0, members.length - 1).forEach(child => {
+            if (typeof current[child] !== "object") {
+                current[child] = {};
+            }
+
+            current = current[child];
+        });
+
+        let memberName = members[members.length - 1];
+
+        if (memberName.indexOf(".") === -1) {
+            current[memberName] = optionalValue || null;
+        }
+        else {
+            let spl = memberName.split(".");
+
+            if (typeof current[spl[0]] !== "object") {
+                current[spl[0]] = {};
+            }
+
+            current[spl[0]]["@_" + spl[1]] = optionalValue || "";
+        }
     }
 
     set(selector, value) {
@@ -62,9 +101,14 @@ class XmlFileEditor extends BaseEditor {
 
     save(newFilename) {
         this._assertOpen();
+        let finalContent = this.serialize();
+        fs.writeFileSync(newFilename || this.file, finalContent, "utf8");
+    }
+
+    serialize() {
         const jsonParser = new JsonToXmlParser(options);
         let finalContent = this.declaration + jsonParser.parse(this.object);
-        fs.writeFileSync(newFilename || this.file, finalContent, "utf8");
+        return finalContent;
     }
 
     close() {

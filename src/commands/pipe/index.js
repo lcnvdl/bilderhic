@@ -1,7 +1,6 @@
 const CommandBase = require("../base/command-base");
 const fs = require('fs');
 const commands = require("../index");
-const inquirer = require('inquirer');
 const OpenCommand = require("../open/index");
 
 class Pipe extends CommandBase {
