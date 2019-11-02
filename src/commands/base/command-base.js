@@ -1,6 +1,7 @@
 /** @typedef {import("../../environment")} Environment */
 
 const path = require("path");
+const inquirer = require('inquirer');
 
 class CommandBase {
     /**
@@ -52,6 +53,34 @@ class CommandBase {
                 console.log(msg, obj);
             }
         }
+    }
+
+    async breakpoint(message) {
+        await breakpoint(this.environment, message);
+    }
+}
+
+async function breakpoint(env, message) {
+    if (!env) {
+        console.warn("Breakpoint without environment. Ignored.");
+        return;
+    }
+
+    if (!env.settings.debug)
+        return;
+
+    if (message) {
+        if (message.error) {
+            console.error(message.error);
+        }
+        else {
+            console.log(message);
+        }
+    }
+
+    let result = await inquirer.prompt([{ name: "Continue", type: "confirm", default: true }]);
+    if (!result.Continue) {
+        throw new Error("Interrupted");
     }
 }
 

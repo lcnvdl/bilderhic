@@ -3,7 +3,7 @@ const CommandBase = require("../base/command-base");
 const FileEditorsFactory = require("../../file-editors/file-editors.factory");
 
 class OpenCommand extends CommandBase {
-    run(args) {
+    async run(args) {
         const file = this.parsePath(args[0]);
         if (!fs.existsSync(file)) {
             throw new Error(`The file ${file} doesn't exists`);
@@ -25,10 +25,18 @@ class OpenCommand extends CommandBase {
             return final;
         });
 
+        this.debug(`Open ${file}`);
+        await this.breakpoint();
+
+        editor.open(file);
+
         for (let i = 0; i < lines.length; i++) {
             let line = lines[i];
 
             let cmd = line;
+
+            this.debug(` - ${cmd}`);
+            await this.breakpoint();
 
             if (cmd.indexOf(" ") !== -1) {
                 cmd = cmd.substr(0, cmd.indexOf(" ")).toLowerCase();
@@ -44,10 +52,11 @@ class OpenCommand extends CommandBase {
             else if (editor.isObjectEditor) {
                 if (cmd === "set") {
                     let selector = line.substr(0, line.indexOf("=")).trim();
-                    let value = line.substr(line.indexOf("=") + 1);
+                    let value = this.environment.applyVariables(line.substr(line.indexOf("=") + 1));
                     editor.set(selector, value);
                 }
                 else {
+                    await this.breakpoint({ error: "Invalid argument for object editor" });
                     return this.codes.invalidArguments;
                 }
             }
@@ -56,10 +65,17 @@ class OpenCommand extends CommandBase {
                     editor.append(line);
                 }
                 else {
+                    await this.breakpoint({ error: "Invalid argument for plain text editor" });
                     return this.codes.invalidArguments;
                 }
             }
         }
+
+
+        this.debug(`Close ${file}`);
+        await this.breakpoint();
+
+        editor.close();
 
         return this.codes.success;
     }

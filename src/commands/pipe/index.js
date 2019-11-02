@@ -21,7 +21,7 @@ class Pipe extends CommandBase {
     async load(str) {
         this.info(`Running pipe "${this.pipeId}"`);
 
-        await breakpoint(this.environment);
+        await this.breakpoint();
 
         let instructions = str.split("\n")
             .map(m => m.trim())
@@ -49,12 +49,12 @@ class Pipe extends CommandBase {
                     }
                 }
 
-                // await breakpoint(this.environment);
+                // await this.breakpoint();
             }
         }
         catch (error) {
             this.debug(`Pipe "${this.pipeId}" failed`);
-            await breakpoint(this.environment, { error });
+            await this.breakpoint({ error });
             throw error;
         }
 
@@ -83,7 +83,7 @@ class Pipe extends CommandBase {
         }
 
         this.info("> " + current);
-        await breakpoint(this.environment);
+        await this.breakpoint();
 
         let result = command.run(cmds);
 
@@ -105,12 +105,15 @@ class Pipe extends CommandBase {
                 return true;
             }
         }
+        else if (cmd[0] === ":break") {
+            await this.breakpoint("Manual breakpoint");
+        }
         else if (cmd[0] === ":open") {
             const file = cmd[1].trim();
 
             let openInstructions = [file];
 
-            this.debug(current);
+            this.info(current);
 
             while (instructions.length > 0 && instructions[0].trim().length > 0 && instructions[0].trim()[0] === "-") {
                 const instruction = instructions.shift();
@@ -118,19 +121,19 @@ class Pipe extends CommandBase {
                 this.debug(` - Instruction added: ${instruction}`);
             }
 
-            this.debug("Running open command...");
-            await breakpoint(this.environment);
+            this.info("Running open command...");
+            await this.breakpoint();
 
             const command = new OpenCommand(this.environment);
-            const commandCode = command.run(openInstructions);
+            const commandCode = await command.run(openInstructions);
 
             if (commandCode !== this.codes.success) {
-                await breakpoint(this.environment, { error: `Open command has exited with an error code: ${commandCode}.` });
+                await this.breakpoint({ error: `Open command has exited with an error code: ${commandCode}.` });
                 return true;
             }
 
-            this.debug("Open command success");
-            await breakpoint(this.environment);
+            this.info("Open command success");
+            await this.breakpoint();
         }
 
         return false;
@@ -142,7 +145,7 @@ class Pipe extends CommandBase {
 
         for (let i = 0; i < folders.length; i++) {
             this.debug(`Forking pipe to ${folders[i]}`);
-            await breakpoint(this.environment);
+            await this.breakpoint();
 
             const pipe = new Pipe(this.environment.fork(folders[i]), this.pipeId + "." + (subPipeId++));
             await pipe.load(instructions.join("\n"));
@@ -152,30 +155,6 @@ class Pipe extends CommandBase {
 
 function getDirectories(path) {
     return fs.readdirSync(path).filter(file => fs.statSync(path + '/' + file).isDirectory());
-}
-
-async function breakpoint(env, message) {
-    if (!env) {
-        console.warn("Breakpoint without environment. Ignored.");
-        return;
-    }
-
-    if (!env.settings.debug)
-        return;
-
-    if (message) {
-        if (message.error) {
-            console.error(message.error);
-        }
-        else {
-            console.log(message);
-        }
-    }
-
-    let result = await inquirer.prompt([{ name: "Continue", type: "confirm", default: true }]);
-    if (!result.Continue) {
-        throw new Error("Interrupted");
-    }
 }
 
 module.exports = Pipe;

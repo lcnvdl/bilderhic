@@ -22,6 +22,21 @@
             "request": "launch",
             "name": "Iniciar programa",
             "program": "${workspaceFolder}\\index.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Iniciar programa (Prueba)",
+            "program": "${workspaceFolder}\\index.js",
+            "args": [
+                "pipe.passengers.txt",
+                "F:\\Dropbox\\NodeBuild\\Suber\\Clients",
+                "-vb"
+            ],
+            "skipFiles": [
+                "${workspaceFolder}/node_modules/**/*.js",
+                "<node_internals>/**/*.js"
+            ]
         }
     ]
 }

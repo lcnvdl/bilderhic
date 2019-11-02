@@ -10,6 +10,7 @@ const options = {
 class XmlFileEditor extends BaseEditor {
     constructor() {
         super();
+        this.declaration = "";
         this.object = null;
         this.file = null;
     }
@@ -24,7 +25,15 @@ class XmlFileEditor extends BaseEditor {
 
     open(file) {
         this.file = file;
-        this.object = parser.parse(fs.readFileSync(file, "utf8"), options);
+
+        let content = fs.readFileSync(file, "utf8");
+
+        if (content.indexOf("<?xml") !== -1) {
+            this.declaration = content.substr(content.indexOf("<?xml"));
+            this.declaration = this.declaration.substr(0, this.declaration.indexOf(">") + 1);
+        }
+
+        this.object = parser.parse(content, options);
     }
 
     load(content) {
@@ -54,7 +63,8 @@ class XmlFileEditor extends BaseEditor {
     save(newFilename) {
         this._assertOpen();
         const jsonParser = new JsonToXmlParser(options);
-        fs.writeFileSync(newFilename || this.file, jsonParser.parse(this.object), "utf8");
+        let finalContent = this.declaration + jsonParser.parse(this.object);
+        fs.writeFileSync(newFilename || this.file, finalContent, "utf8");
     }
 
     close() {

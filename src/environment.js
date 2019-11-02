@@ -14,7 +14,7 @@ class Environment {
     }
 
     fork(subFolder) {
-        let fork = new Environment(this.parsePath(subFolder));
+        let fork = new Environment(this.parsePath(subFolder), this.settings);
         fork.variables = JSON.parse(JSON.stringify(this.variables));
         return fork;
     }
