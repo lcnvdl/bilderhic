@@ -11,7 +11,14 @@ class BaseEditor {
         throw new Error("Not implemented");
     }
 
-    save() {
+    load(content) {
+        throw new Error("Not implemented");
+    }
+
+    /**
+     * @param {string} [newFilename] New filename
+     */
+    save(newFilename) {
         throw new Error("Not implemented");
     }
 

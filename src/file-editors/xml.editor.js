@@ -9,6 +9,7 @@ const options = {
 
 class XmlFileEditor extends BaseEditor {
     constructor() {
+        super();
         this.object = null;
         this.file = null;
     }
@@ -19,18 +20,37 @@ class XmlFileEditor extends BaseEditor {
 
     open(file) {
         this.file = file;
-        
         this.object = parser.parse(fs.readFileSync(file, "utf8"), options);
     }
 
-    set(selector, value) {
-        throw new Error("Not implemented");
+    load(content) {
+        this.file = "";
+        this.object = parser.parse(content, options);
     }
 
-    save() {
+    set(selector, value) {
+        let current = this.object;
+        let members = selector.split(">");
+
+        members.slice(0, members.length - 1).forEach(child => {
+            current = current[child];
+        });
+
+        let memberName = members[members.length - 1];
+
+        if (memberName.indexOf(".") === -1) {
+            current[memberName] = value;
+        }
+        else {
+            let spl = memberName.split(".");
+            current[spl[0]]["@_" + spl[1]] = value;
+        }
+    }
+
+    save(newFilename) {
         this._assertOpen();
         const jsonParser = new JsonToXmlParser(options);
-        fs.writeFileSync(this.file, jsonParser.parse(this.object), "utf8");
+        fs.writeFileSync(newFilename || this.file, jsonParser.parse(this.object), "utf8");
     }
 
     close() {

@@ -3,6 +3,7 @@ const fs = require("fs");
 
 class JsonFileEditor extends BaseEditor {
     constructor() {
+        super();
         this.object = null;
         this.file = null;
     }
@@ -16,13 +17,28 @@ class JsonFileEditor extends BaseEditor {
         this.object = JSON.parse(fs.readFileSync(file, "utf8"));
     }
 
-    set(selector, value) {
-        throw new Error("Not implemented");
+    load(content) {
+        this.file = "";
+        this.object = JSON.parse(content);
     }
 
-    save() {
+    set(selector, value) {
+        let current = this.object;
+        let members = selector.split(".");
+
+        for (let i = 0; i < members.length; i++) {
+            if (i === members.length - 1) {
+                current[members[i]] = value;
+            }
+            else {
+                current = current[members[i]];
+            }
+        }
+    }
+
+    save(newFilename) {
         this._assertOpen();
-        fs.writeFileSync(this.file, JSON.stringify(this.object, null, 2), "utf8");
+        fs.writeFileSync(newFilename || this.file, JSON.stringify(this.object, null, 2), "utf8");
     }
 
     close() {
