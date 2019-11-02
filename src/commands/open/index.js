@@ -56,31 +56,33 @@ class OpenCommand extends CommandBase {
                     editor.set(selector, value);
                 }
                 else {
-                    await this.breakpoint({ error: "Invalid argument for object editor" });
+                    await this.breakpoint({ error: `Invalid command "${cmd}" for object editor` });
                     return this.codes.invalidArguments;
                 }
             }
             else {
                 if (cmd === "append") {
+                    line = this.environment.applyVariables(line);
                     editor.append(line);
                 }
                 else if (cmd === "set") {
                     let lineNumber = +(line.substr(0, line.indexOf(" ")));
                     line = line.substr(line.indexOf(" ") + 1);
+                    line = this.environment.applyVariables(line);
                     editor.setLine(lineNumber, line);
                 }
                 else if (cmd === "replace") {
                     //  TODO Mejorar para cuando hay espacios en las palabras a reemplazar
-                    let spl = line.split(" ");
+                    let spl = line.split(" ").map(m => this.environment.applyVariables(m));
                     editor.replace(spl[0], spl[1]);
                 }
-                else if (cmd === "replaceOne") {
+                else if (cmd === "replaceone") {
                     //  TODO Mejorar para cuando hay espacios en las palabras a reemplazar
-                    let spl = line.split(" ");
+                    let spl = line.split(" ").map(m => this.environment.applyVariables(m));
                     editor.replace(spl[0], spl[1]);
                 }
                 else {
-                    await this.breakpoint({ error: "Invalid argument for plain text editor" });
+                    await this.breakpoint({ error: `Invalid command "${cmd}" for plain text editor` });
                     return this.codes.invalidArguments;
                 }
             }

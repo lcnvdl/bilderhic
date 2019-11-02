@@ -12,6 +12,7 @@ class EnvCommand extends CommandBase {
             const filename = this.parsePath(args[1]);
             const variables = YAML.parse(fs.readFileSync(filename, "utf8"));
             this.environment.setVariables(variables);
+            this.debug(this.environment.variables);
             return this.codes.success;
         }
 

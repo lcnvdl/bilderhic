@@ -15,7 +15,7 @@ class FileEditorsFactory {
 
         const fileFormat = file.substr(file.lastIndexOf(".") + 1).toLowerCase();
 
-        const editor = editors.find(m => m.formats.some(format => format === fileFormat));
+        let editor = editors.find(m => m.formats.some(format => format === fileFormat));
 
         if (!editor) {
             editor = new TxtFileEditor();
