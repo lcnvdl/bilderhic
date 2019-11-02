@@ -6,6 +6,8 @@ class RunCommand extends CommandBase {
     async run(args) {
         let command = args.join(" ");
 
+        command = this.environment.applyVariables(command);
+
         const { stdout, stderr } = await exec(command, { cwd: this.environment.cwd });
 
         if (stdout && stdout !== "") {

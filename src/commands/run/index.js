@@ -5,7 +5,10 @@ class RunCommand extends CommandBase {
     run(args) {
         return new Promise((resolve, reject) => {
             try {
-                const command = args.join(" ");
+                let command = args.join(" ");
+
+                command = this.environment.applyVariables(command);
+                
                 const child = child_process.exec(command, { cwd: this.environment.cwd });
 
                 child.stdout.setEncoding('utf8');
