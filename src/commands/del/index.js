@@ -36,7 +36,7 @@ class DelCommand extends CommandBase {
         let fileOrFolder = this.parsePath(args);
 
         if (!fs.existsSync(fileOrFolder)) {
-            return;
+            return this.codes.success;
         }
 
         if (fs.lstatSync(fileOrFolder).isDirectory()) {
@@ -46,6 +46,8 @@ class DelCommand extends CommandBase {
             fs.unlinkSync(fileOrFolder);
             this.info(`File ${fileOrFolder} deleted`);
         }
+        
+        return this.codes.success;
     }
 }
 
