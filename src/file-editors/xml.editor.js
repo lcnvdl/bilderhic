@@ -18,6 +18,10 @@ class XmlFileEditor extends BaseEditor {
         return ["xml"];
     }
 
+    get isObjectEditor() {
+        return true;
+    }
+
     open(file) {
         this.file = file;
         this.object = parser.parse(fs.readFileSync(file, "utf8"), options);

@@ -12,6 +12,10 @@ class JsonFileEditor extends BaseEditor {
         return ["json"];
     }
 
+    get isObjectEditor() {
+        return true;
+    }
+
     open(file) {
         this.file = file;
         this.object = JSON.parse(fs.readFileSync(file, "utf8"));

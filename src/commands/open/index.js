@@ -43,7 +43,9 @@ class OpenCommand extends CommandBase {
             }
             else if (editor.isObjectEditor) {
                 if (cmd === "set") {
-                    throw new Error("Not implemented");
+                    let selector = line.substr(0, line.indexOf("=")).trim();
+                    let value = line.substr(line.indexOf("=") + 1);
+                    editor.set(selector, value);
                 }
                 else {
                     return this.codes.invalidArguments;
