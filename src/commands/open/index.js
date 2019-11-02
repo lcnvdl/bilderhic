@@ -59,7 +59,7 @@ class OpenCommand extends CommandBase {
                     let attribute = line.indexOf("=") !== -1;
                     let selector = attribute ? line.substr(0, line.indexOf("=")).trim() : line;
                     let value = attribute ? this.environment.applyVariables(line.substr(line.indexOf("=") + 1)) : undefined;
-                    editor.set(selector, value);
+                    editor.add(selector, value);
                 }
                 else {
                     await this.breakpoint({ error: `Invalid command "${cmd}" for object editor` });

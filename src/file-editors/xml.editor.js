@@ -76,7 +76,15 @@ class XmlFileEditor extends BaseEditor {
                 current[spl[0]] = {};
             }
 
-            current[spl[0]]["@_" + spl[1]] = optionalValue || "";
+            let member = current[spl[0]];
+            if (member instanceof Array) {
+                let newMember = {};
+                newMember["@_" + spl[1]] = optionalValue || "";
+                member.push(newMember);
+            }
+            else {
+                member["@_" + spl[1]] = optionalValue || "";
+            }
         }
     }
 
@@ -95,7 +103,8 @@ class XmlFileEditor extends BaseEditor {
         }
         else {
             let spl = memberName.split(".");
-            current[spl[0]]["@_" + spl[1]] = value;
+            let member = current[spl[0]];
+            member["@_" + spl[1]] = value;
         }
     }
 

@@ -29,7 +29,7 @@
             "name": "Iniciar programa (Prueba)",
             "program": "${workspaceFolder}\\index.js",
             "args": [
-                "pipe.passengers.txt",
+                "test.txt",
                 "F:\\Dropbox\\NodeBuild\\Suber\\Clients",
                 "-vb"
             ],
