@@ -64,6 +64,21 @@ class OpenCommand extends CommandBase {
                 if (cmd === "append") {
                     editor.append(line);
                 }
+                else if (cmd === "set") {
+                    let lineNumber = +(line.substr(0, line.indexOf(" ")));
+                    line = line.substr(line.indexOf(" ") + 1);
+                    editor.setLine(lineNumber, line);
+                }
+                else if (cmd === "replace") {
+                    //  TODO Mejorar para cuando hay espacios en las palabras a reemplazar
+                    let spl = line.split(" ");
+                    editor.replace(spl[0], spl[1]);
+                }
+                else if (cmd === "replaceOne") {
+                    //  TODO Mejorar para cuando hay espacios en las palabras a reemplazar
+                    let spl = line.split(" ");
+                    editor.replace(spl[0], spl[1]);
+                }
                 else {
                     await this.breakpoint({ error: "Invalid argument for plain text editor" });
                     return this.codes.invalidArguments;
