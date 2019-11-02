@@ -2,6 +2,7 @@ const CommandBase = require("../base/command-base");
 const fs = require('fs');
 const commands = require("../index");
 const inquirer = require('inquirer');
+const OpenCommand = require("../open/index");
 
 class Pipe extends CommandBase {
     constructor(env, pipeId) {
@@ -25,7 +26,8 @@ class Pipe extends CommandBase {
         let instructions = str.split("\n")
             .map(m => m.trim())
             .filter(m => m && m !== "")
-            .filter(m => m.indexOf("//") !== 0);
+            .filter(m => m.indexOf("//") !== 0)
+            .filter(m => m.indexOf("rem") !== 0);
 
         try {
             while (instructions.length > 0) {
@@ -96,6 +98,33 @@ class Pipe extends CommandBase {
                 this._pipeCmdEachFolder(instructions);
                 return true;
             }
+        }
+        else if (cmd[0] === ":open") {
+            const file = cmd[1].trim();
+
+            let openInstructions = [file];
+
+            this.debug(current);
+
+            while (instructions.length > 0 && instructions[0].trim().length > 0 && instructions[0].trim()[0] === "-") {
+                const instruction = instructions.shift();
+                openInstructions.push(instruction);
+                this.debug(` - Instruction added: ${instruction}`);
+            }
+
+            this.debug("Running open command...");
+            await breakpoint(this.environment);
+
+            const command = new OpenCommand(this.environment);
+            const commandCode = command.run(openInstructions);
+
+            if (commandCode !== this.codes.success) {
+                await breakpoint(this.environment, { error: `Open command has exited with an error code: ${commandCode}.` });
+                return true;
+            }
+
+            this.debug("Open command success");
+            await breakpoint(this.environment);
         }
 
         return false;
