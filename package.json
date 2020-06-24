@@ -1,7 +1,7 @@
 {
   "name": "bilderhic",
-  "version": "1.0.25",
-  "description": "Bilderhic (bhic) is a smart and simple build tool",
+  "version": "1.0.26",
+  "description": "Bilderhic (bhic) is a smart and simple command tool for automatization.",
   "preferGlobal": true,
   "main": "index.js",
   "bin": {
