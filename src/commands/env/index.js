@@ -15,6 +15,15 @@ class EnvCommand extends CommandBase {
             this.debug(this.environment.variables);
             return this.codes.success;
         }
+        else if (args[0] === "set") {
+            const key = args[1];
+            const value = args[2];
+            const obj = {};
+            obj[key] = value;
+            this.environment.setVariables(obj, false);
+            this.debug(this.environment.variables);
+            return this.codes.success;
+        }
 
         return this.codes.invalidArguments;
     }
