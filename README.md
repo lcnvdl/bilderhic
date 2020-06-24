@@ -49,12 +49,12 @@ app:
 ```bash
 :open config.xml
     - set widget.id=[app.id]
-	- set widget.android-versionCode=[app.version]
-	- set widget.version=0.0.[app.version]
-	- set widget>name=[app.name]
-	- set widget>description=[app.description]
+    - set widget.android-versionCode=[app.version]
+    - set widget.version=0.0.[app.version]
+    - set widget>name=[app.name]
+    - set widget>description=[app.description]
     - save
-	- close
+    - close
 ```
 
 > Clear your environment
