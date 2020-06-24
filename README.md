@@ -1,5 +1,5 @@
 # bilderhic
-Bilderhic is a smart and simple commands tool for automatization.
+Bilderhic is a smart and simple command tool for automatization.
 
 ## How it works?
 You have to create a pipe file.
