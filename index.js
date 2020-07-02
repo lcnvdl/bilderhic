@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 if (!process.argv.slice(2).length) {
-    console.log("node-build <file>")
+    console.log("bhic <file>")
     process.exit();
 }
 

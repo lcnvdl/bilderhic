@@ -11,6 +11,7 @@ class Environment {
         const { verbose = false, debug = false } = settings || {};
 
         this.settings = { verbose, debug };
+        this.parent = null;
     }
 
     fork(subFolder) {
@@ -22,7 +23,7 @@ class Environment {
         else {
             fork = new Environment(this.parsePath(subFolder), this.settings);
         }
-
+        fork.parent = this;
         fork.variables = JSON.parse(JSON.stringify(this.variables));
         return fork;
     }
@@ -51,8 +52,7 @@ class Environment {
         }
     }
 
-    applyVariables(str) {
-        let finalStr = str;
+    getVariables() {
         let variables = {};
 
         Object.keys(this.variables).forEach(k => {
@@ -63,6 +63,33 @@ class Environment {
                 variables[k] = this.variables[k];
             }
         });
+
+        return variables;
+    }
+
+    applyVariables(str) {
+        let finalStr = str;
+        let variables = this.getVariables();
+
+        while (finalStr.indexOf(`[$p`) !== -1) {
+            const i = finalStr.indexOf(`[$p`);
+            const f1 = finalStr.indexOf("]", i + 1) + 1;
+            const str = finalStr.substring(i, f1);
+
+            //  TODO    Hacer recorrido hacia arriba
+            console.warn("Experimental function.");
+
+            const pVars = this.parent.getVariables();
+            let key = str.substr(str.lastIndexOf(".") + 1);
+            key = key.substr(0, key.lastIndexOf("]"));
+
+            if (typeof pVars[key] !== "undefined") {
+                finalStr = finalStr.replace(str, `${pVars[key]}`);
+            }
+            else {
+                finalStr = finalStr.replace(str, "undefined");
+            }
+        }
 
         Object.keys(variables).forEach(key => {
             while (finalStr.indexOf(`[${key}]`) !== -1) {

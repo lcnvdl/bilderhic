@@ -1,4 +1,8 @@
+env set counter 0
 :each file
+env add counter 1 1
 echo 1) [$currentFile]
 echo 2) [$currentFilePath]
 echo 3) [$currentFileAbsolutePath]
+:iifEq [$p.counter] == [$filesCount]
+echo Total Files [$p.counter]

@@ -1,0 +1,5 @@
+env set counter 0
+env add counter 1
+env add counter 1
+rem env add counter [counter]
+echo [counter]

@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require("path");
 const commands = require("../index");
 const OpenCommand = require("../open/index");
+const safeEval = require('safe-eval');
 
 class Pipe extends CommandBase {
     constructor(env, pipeId) {
@@ -112,6 +113,22 @@ class Pipe extends CommandBase {
         else if (cmd[0] === ":break") {
             await this.breakpoint("Manual breakpoint");
         }
+        else if (cmd[0] === ":iifEq") {
+            this.info(current);
+
+            const condition = "(" + this.environment.applyVariables(current.substr(current.indexOf(" ") + 1).trim()) + ")";
+
+            await this.breakpoint();
+
+            const result = safeEval(condition);
+
+            if (!result) {
+                instructions.shift();
+            }
+
+            this.info(`Inline if eq command success with ${result}`);
+            await this.breakpoint();
+        }
         else if (cmd[0] === ":open") {
             const file = cmd[1].trim();
 
@@ -168,7 +185,9 @@ class Pipe extends CommandBase {
             fork.setVariables({
                 "$currentFile": files[i],
                 "$currentFilePath": path.join(folder, files[i]),
-                "$currentFileAbsolutePath": path.resolve(path.join(folder, files[i]))
+                "$currentFileAbsolutePath": path.resolve(path.join(folder, files[i])),
+                "$filesCount": files.length,
+                "$fileIndex": i
             });
             const pipe = new Pipe(fork, this.pipeId + "." + (subPipeId++));
             await pipe.load(instructions.join("\n"));

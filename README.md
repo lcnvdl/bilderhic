@@ -30,6 +30,10 @@ It allows you to create / load / edit environment variables (inside your process
 ```bash
 env set <key> <value>
 ```
+> Adds a value to a numeric variable
+```bash
+env add <key> <value>
+```
 
 > Load variables
 ```bash
@@ -105,6 +109,9 @@ DOC
 ```
 ```bash
 :open <file>
+```
+```bash
+:iifEq <conditions>
 ```
 
 ## File edition
