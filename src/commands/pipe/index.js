@@ -1,5 +1,6 @@
 const CommandBase = require("../base/command-base");
 const fs = require('fs');
+const path = require("path");
 const commands = require("../index");
 const OpenCommand = require("../open/index");
 
@@ -103,6 +104,10 @@ class Pipe extends CommandBase {
                 await this._pipeCmdEachFolder(instructions);
                 return true;
             }
+            else if (cmd[1] === "file") {
+                await this._pipeCmdEachFile(instructions);
+                return true;
+            }
         }
         else if (cmd[0] === ":break") {
             await this.breakpoint("Manual breakpoint");
@@ -150,10 +155,33 @@ class Pipe extends CommandBase {
             await pipe.load(instructions.join("\n"));
         }
     }
+
+    async _pipeCmdEachFile(instructions) {
+        const folder = this.environment.cwd;
+        let files = getFiles(folder);
+        let subPipeId = 1;
+
+        for (let i = 0; i < files.length; i++) {
+            this.debug(`Forking pipe for file ${files[i]}`);
+            await this.breakpoint();
+            const fork = this.environment.fork();
+            fork.setVariables({
+                "$currentFile": files[i],
+                "$currentFilePath": path.join(folder, files[i]),
+                "$currentFileAbsolutePath": path.resolve(path.join(folder, files[i]))
+            });
+            const pipe = new Pipe(fork, this.pipeId + "." + (subPipeId++));
+            await pipe.load(instructions.join("\n"));
+        }
+    }
 }
 
 function getDirectories(path) {
     return fs.readdirSync(path).filter(file => fs.statSync(path + '/' + file).isDirectory());
+}
+
+function getFiles(path) {
+    return fs.readdirSync(path).filter(file => fs.statSync(path + '/' + file).isFile());
 }
 
 module.exports = Pipe;

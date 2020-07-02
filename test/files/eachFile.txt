@@ -1,0 +1,4 @@
+:each file
+echo 1) [$currentFile]
+echo 2) [$currentFilePath]
+echo 3) [$currentFileAbsolutePath]

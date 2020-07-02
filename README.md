@@ -98,10 +98,13 @@ DOC
 :pipe <file>
 ```
 ```bash
-:each <folder>
+:each folder
 ```
 ```bash
-:open file
+:each file
+```
+```bash
+:open <file>
 ```
 
 ## File edition
