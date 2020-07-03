@@ -51,6 +51,8 @@ app:
 
 > Usage of environment variables
 ```bash
+env load File.yml
+
 :open config.xml
     - set widget.id=[app.id]
     - set widget.android-versionCode=[app.version]
