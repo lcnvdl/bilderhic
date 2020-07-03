@@ -4,5 +4,5 @@ env add counter 1 1
 echo 1) [$currentFile]
 echo 2) [$currentFilePath]
 echo 3) [$currentFileAbsolutePath]
-:iifEq [$p.counter] == [$filesCount]
+:if [$p.counter] == [$filesCount]
 echo Total Files [$p.counter]

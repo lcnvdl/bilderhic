@@ -111,7 +111,7 @@ DOC
 :open <file>
 ```
 ```bash
-:iifEq <conditions>
+:if <conditions>
 ```
 
 ## File edition
