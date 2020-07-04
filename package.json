@@ -18,7 +18,10 @@
     "example2:debug": "node index.js eachFile.txt ./test/files/ -d",
     "example3": "node index.js counter.txt ./test/files/",
     "example3:debug": "node index.js counter.txt ./test/files/ -d",
-    "test": "mocha"
+    "example4": "node index.js file_reader.txt ./test/files/",
+    "example4:debug": "node index.js file_reader.txt ./test/files/ -d",
+    "test": "mocha",
+    "publish": "node index.js publish.txt"
   },
   "repository": {
     "type": "git",
