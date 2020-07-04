@@ -9,6 +9,7 @@ describe("XmlFileEditor", () => {
     describe("add", () => {
         beforeEach(() => {
             editor = new XmlEditor();
+            editor.options.format = false;
         });
 
         it("should add a text element", () => {

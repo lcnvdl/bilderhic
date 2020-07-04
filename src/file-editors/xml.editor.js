@@ -3,8 +3,9 @@ const fs = require("fs");
 const parser = require('fast-xml-parser');
 const JsonToXmlParser = parser.j2xParser;
 
-const options = {
-    ignoreAttributes: false
+const defaultOptions = {
+    ignoreAttributes: false,
+    format: true
 };
 
 class XmlFileEditor extends BaseEditor {
@@ -13,6 +14,7 @@ class XmlFileEditor extends BaseEditor {
         this.declaration = "";
         this.object = null;
         this.file = null;
+        this.options = defaultOptions;
     }
 
     get formats() {
@@ -37,7 +39,7 @@ class XmlFileEditor extends BaseEditor {
             this.object = {};
         }
         else {
-            this.object = parser.parse(content, options);
+            this.object = parser.parse(content, this.options);
         }
     }
 
@@ -48,7 +50,7 @@ class XmlFileEditor extends BaseEditor {
             this.object = {};
         }
         else {
-            this.object = parser.parse(content, options);
+            this.object = parser.parse(content, this.options);
         }
     }
 
@@ -88,6 +90,14 @@ class XmlFileEditor extends BaseEditor {
         }
     }
 
+    configure(key, value) {
+        if (key === "format") {
+            value = value == "true";
+        }
+
+        super.configure(key, value);
+    }
+
     set(selector, value) {
         let current = this.object;
         let members = selector.split(">");
@@ -115,7 +125,7 @@ class XmlFileEditor extends BaseEditor {
     }
 
     serialize() {
-        const jsonParser = new JsonToXmlParser(options);
+        const jsonParser = new JsonToXmlParser(this.options);
         let finalContent = this.declaration + jsonParser.parse(this.object);
         return finalContent;
     }

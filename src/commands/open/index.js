@@ -43,7 +43,12 @@ class OpenCommand extends CommandBase {
                 line = line.substr(line.indexOf(" ") + 1);
             }
 
-            if (cmd === "close") {
+            if (cmd === "configure") {
+                let selector = line.substr(0, line.indexOf("=")).trim();
+                let value = this.environment.applyVariables(line.substr(line.indexOf("=") + 1));
+                editor.configure(selector, value);
+            }
+            else if (cmd === "close") {
                 editor.close();
             }
             else if (cmd === "save") {

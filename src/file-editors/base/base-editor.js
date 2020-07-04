@@ -1,10 +1,22 @@
 class BaseEditor {
+    constructor() {
+        this._options = {};
+    }
+
     get formats() {
         throw new Error("Not implemented");
     }
 
     get isObjectEditor() {
         throw new Error("Not implemented");
+    }
+
+    get options() {
+        return this._options;
+    }
+
+    set options(value) {
+        this._options = value;
     }
 
     open(name) {
@@ -20,6 +32,10 @@ class BaseEditor {
      */
     save(newFilename) {
         throw new Error("Not implemented");
+    }
+
+    configure(key, value) {
+        this.options[key] = value;
     }
 
     close() {
