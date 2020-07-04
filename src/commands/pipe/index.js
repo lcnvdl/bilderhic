@@ -113,6 +113,16 @@ class Pipe extends CommandBase {
         else if (cmd[0] === ":break") {
             await this.breakpoint("Manual breakpoint");
         }
+        else if (cmd[0] === ":eval") {
+            this.info(current);
+            await this.breakpoint();
+            
+            const condition = "(" + this.environment.applyVariables(current.substr(current.indexOf(" ") + 1).trim()) + ")";
+
+            const result = safeEval(condition);
+
+            this.environment.setVariable("$eval", result);
+        }
         else if (cmd[0] === ":if") {
             this.info(current);
 

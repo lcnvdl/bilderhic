@@ -1,4 +1,4 @@
-const BaseEditor = require("./base/base-editor");
+const ObjectEditor = require("./base/object-editor");
 const fs = require("fs");
 const parser = require('fast-xml-parser');
 const JsonToXmlParser = parser.j2xParser;
@@ -8,7 +8,7 @@ const defaultOptions = {
     format: true
 };
 
-class XmlFileEditor extends BaseEditor {
+class XmlFileEditor extends ObjectEditor {
     constructor() {
         super();
         this.declaration = "";
@@ -19,10 +19,6 @@ class XmlFileEditor extends BaseEditor {
 
     get formats() {
         return ["xml"];
-    }
-
-    get isObjectEditor() {
-        return true;
     }
 
     open(file) {
@@ -96,6 +92,30 @@ class XmlFileEditor extends BaseEditor {
         }
 
         super.configure(key, value);
+    }
+
+    get(selector) {
+        return this.getFirst(selector);
+    }
+
+    getFirst(selector) {
+        let current = this.object;
+        let members = selector.split(">");
+
+        members.slice(0, members.length - 1).forEach(child => {
+            current = current[child];
+        });
+
+        let memberName = members[members.length - 1];
+
+        if (memberName.indexOf(".") === -1) {
+            return current[memberName];
+        }
+        else {
+            let spl = memberName.split(".");
+            let member = current[spl[0]];
+            return member["@_" + spl[1]];
+        }
     }
 
     set(selector, value) {

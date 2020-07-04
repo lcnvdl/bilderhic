@@ -1,6 +1,7 @@
 const fs = require('fs');
 const CommandBase = require("../base/command-base");
 const FileEditorsFactory = require("../../file-editors/file-editors.factory");
+const { isArray } = require('util');
 
 class OpenCommand extends CommandBase {
     async run(args) {
@@ -59,6 +60,45 @@ class OpenCommand extends CommandBase {
                     let selector = line.substr(0, line.indexOf("=")).trim();
                     let value = this.environment.applyVariables(line.substr(line.indexOf("=") + 1));
                     editor.set(selector, value);
+                }
+                else if (cmd === "get") {
+                    let selector = line.substr(0, line.indexOf(">")).trim();
+                    let resultIndex = null;
+
+                    if (selector.includes(" ")) {
+                        resultIndex = selector.substr(0, selector.indexOf(" "));
+                        selector = selector.substr(selector.indexOf(" ") + 1).trim();
+                    }
+
+                    if (resultIndex !== null) {
+
+                        if (resultIndex === "first") {
+                            resultIndex = 0;
+                        }
+                        else if (resultIndex === "last") {
+                            resultIndex = -1;
+                        }
+                        else if (!isNaN(resultIndex)) {
+                            resultIndex = +resultIndex;
+                        }
+                        else {
+                            await this.breakpoint({ error: "Unknown result index: " + resultIndex });
+                            return this.codes.invalidArguments;
+                        }
+                    }
+
+                    let envVarName = line.substr(line.indexOf(">") + 1).trim();
+                    let value = editor.get(selector);
+
+                    if (resultIndex !== null && Array.isArray(value) && typeof value !== "string") {
+                        if (resultIndex === -1) {
+                            resultIndex = value.length - 1;
+                        }
+
+                        value = value[resultIndex];
+                    }
+
+                    this.environment.setVariable(envVarName, value);
                 }
                 else if (cmd === "add") {
                     let attribute = line.indexOf("=") !== -1;

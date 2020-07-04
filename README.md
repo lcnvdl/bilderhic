@@ -113,6 +113,9 @@ DOC
 :open <file>
 ```
 ```bash
+:eval <code>
+```
+```bash
 :if <conditions>
 ```
 
@@ -145,7 +148,10 @@ Object editors: XML, HTML, JSON
 - add <key>=<value>
 ```
 ```bash
-- set <key>=<value>
+- set <selector> = <value or variable>
+```
+```bash
+- get <selector> > <variableName>
 ```
 ```bash
 - save

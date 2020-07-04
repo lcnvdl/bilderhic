@@ -43,6 +43,10 @@ class Environment {
         }
     }
 
+    setVariable(key, value) {
+        this.variables[key] = value;
+    }
+
     setVariables(newVariables, clear) {
         if (clear) {
             this.variables = newVariables;
@@ -98,9 +102,9 @@ class Environment {
             }
         });
 
-        if (finalStr.indexOf("[") !== -1 && finalStr.indexOf("]") !== -1) {
+        /*if (finalStr.indexOf("[") !== -1 && finalStr.indexOf("]") !== -1) {
             throw new Error(`One or more undefined variables in path "${finalStr}"`);
-        }
+        }*/
 
         return finalStr;
     }

@@ -1,0 +1,5 @@
+:open file.xml
+    -   get note.id > noteId
+    -   close
+
+echo Note ID: [noteId]
