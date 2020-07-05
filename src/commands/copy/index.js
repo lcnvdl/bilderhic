@@ -15,6 +15,9 @@ class CopyCommand extends CommandBase {
         let file2 = this.parsePath(args[1]);
         let ignores = [];
 
+        this.debug(`Copy "${file1}" to "${file2}"`);
+        this.breakpoint();
+
         for (let i = 2; i < args.length; i++) {
             const arg = args[i];
             if (arg === "-i" || arg === "--ignore") {
