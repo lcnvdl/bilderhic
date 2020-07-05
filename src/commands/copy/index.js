@@ -2,7 +2,7 @@ const fse = require('fs-extra');
 const CommandBase = require("../base/command-base");
 
 class CopyCommand extends CommandBase {
-    run(args) {
+    async run(args) {
         if (!args || args.length === 0) {
             return this.codes.missingArguments;
         }
@@ -16,7 +16,7 @@ class CopyCommand extends CommandBase {
         let ignores = [];
 
         this.debug(`Copy "${file1}" to "${file2}"`);
-        this.breakpoint();
+        await this.breakpoint();
 
         for (let i = 2; i < args.length; i++) {
             const arg = args[i];

@@ -4,6 +4,7 @@ const path = require("path");
 const commands = require("../index");
 const OpenCommand = require("../open/index");
 const safeEval = require('safe-eval');
+const CommandsExtractor = require("../helpers/commands-extractor");
 
 class Pipe extends CommandBase {
     constructor(env, pipeId) {
@@ -71,7 +72,7 @@ class Pipe extends CommandBase {
     }
 
     async _processCommand(current) {
-        let cmds = current.split(" ");
+        let cmds = CommandsExtractor.extract(current);
 
         const cmd = cmds.shift();
 
@@ -104,7 +105,7 @@ class Pipe extends CommandBase {
     }
 
     async _processPipeCommand(current, instructions) {
-        let cmd = current.split(" ");
+        let cmd = CommandsExtractor.extract(current);
 
         if (cmd[0] === ":each") {
             if (cmd[1] === "folder") {
