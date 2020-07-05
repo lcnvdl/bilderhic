@@ -48,6 +48,12 @@ class Pipe extends CommandBase {
                     else if (code === this.codes.missingArguments) {
                         throw new Error(`Missing arguments in instruction "${current}".`);
                     }
+                    else if (code === this.codes.exitPipe) {
+                        break;
+                    }
+                    else if (code === this.codes.exitProcess) {
+                        process.exit(0);
+                    }
                 }
 
                 // await this.breakpoint();
@@ -116,7 +122,7 @@ class Pipe extends CommandBase {
         else if (cmd[0] === ":eval") {
             this.info(current);
             await this.breakpoint();
-            
+
             const condition = "(" + this.environment.applyVariables(current.substr(current.indexOf(" ") + 1).trim()) + ")";
 
             const result = safeEval(condition);

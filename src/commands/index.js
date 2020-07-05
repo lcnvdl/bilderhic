@@ -6,5 +6,6 @@ module.exports = {
     mkdir: require("./mkdir/index"),
     pipe: require("./pipe/index"),
     ren: require("./ren/index"),
-    run: require("./run/index")
+    run: require("./run/index"),
+    exit: require("./exit/index")
 };

@@ -1,0 +1,3 @@
+:each file
+echo TEST
+exit

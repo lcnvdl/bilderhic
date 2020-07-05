@@ -20,7 +20,9 @@ class CommandBase {
             missingArguments: -2,
             invalidArguments: -1,
             success: 0,
-            error: 1
+            error: 1,
+            exitPipe: 10,
+            exitProcess: 11
         }
     }
 

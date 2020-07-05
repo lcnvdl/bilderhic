@@ -75,7 +75,7 @@ Copies a file or a folder. Override the files if it exists.
 
 ##### Usage
 ```bash
-copy <from> <to>
+copy <from> <to> [--ignore <file or folder>]
 ```
 #### > del command
 
@@ -98,6 +98,16 @@ DOC
 
 #### > run command
 DOC
+
+#### > exit command
+
+##### Description
+Stops the pipe or the process.
+
+##### Usage
+```bash
+exit [pipe]
+```
 
 ### ~ Special Commands ~
 ```bash
