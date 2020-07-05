@@ -1,6 +1,6 @@
 {
   "name": "bilderhic",
-  "version": " 1.0.31",
+  "version": " 1.0.38",
   "description": "Bilderhic (bhic) is a smart and simple command tool for automatization.",
   "preferGlobal": true,
   "main": "index.js",
@@ -21,7 +21,7 @@
     "example4": "node index.js file_reader.txt ./test/files/",
     "example4:debug": "node index.js file_reader.txt ./test/files/ -d",
     "test": "mocha",
-    "publish": "node index.js publish.txt"
+    "publish:lib": "node index.js publish.txt"
   },
   "repository": {
     "type": "git",

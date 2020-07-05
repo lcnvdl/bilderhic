@@ -18,5 +18,6 @@ echo New version: [version]
 
 echo Publishing...
 npm publish
+npm i
 
 echo Success

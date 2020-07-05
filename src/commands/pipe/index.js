@@ -171,14 +171,22 @@ class Pipe extends CommandBase {
     }
 
     async _pipeCmdEachFolder(instructions) {
-        let folders = getDirectories(this.environment.cwd);
+        const rootFolder = this.environment.cwd;
+        let folders = getDirectories(rootFolder);
         let subPipeId = 1;
 
         for (let i = 0; i < folders.length; i++) {
             this.debug(`Forking pipe to ${folders[i]}`);
             await this.breakpoint();
-
-            const pipe = new Pipe(this.environment.fork(folders[i]), this.pipeId + "." + (subPipeId++));
+            const fork = this.environment.fork(folders[i]);
+            fork.setVariables({
+                "$currentFolder": folders[i],
+                "$currentFolderPath": path.join(rootFolder, folders[i]),
+                "$currentFolderAbsolutePath": path.resolve(path.join(rootFolder, folders[i])),
+                "$foldersCount": folders.length,
+                "$folderIndex": i
+            });
+            const pipe = new Pipe(fork, this.pipeId + "." + (subPipeId++));
             await pipe.load(instructions.join("\n"));
         }
     }
