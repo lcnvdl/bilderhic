@@ -1,0 +1,8 @@
+cd ..
+:each folder
+echo [$currentFolder]
+echo [$currentFolderPath]
+echo [$currentFolderAbsolutePath]
+echo [$foldersCount]
+echo [$folderIndex]
+exit
