@@ -43,6 +43,8 @@ cwd = cwd || process.cwd();
 
 const env = new Environment(cwd, settings);
 
+env.setFromProcess(process);
+
 new Pipe(env).loadFromFile(file).then(() => {
     console.log("Program finished");
 }, err => {

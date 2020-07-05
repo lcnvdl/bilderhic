@@ -14,6 +14,10 @@ class Environment {
         this.parent = null;
     }
 
+    setFromProcess(process) {
+        this.setVariables(process.env);
+    }
+
     fork(subFolder) {
         let fork;
 
