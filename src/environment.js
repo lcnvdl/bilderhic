@@ -6,12 +6,27 @@ class Environment {
      */
     constructor(dir, settings) {
         this.variables = {};
+        this._cwd = null;
+
         this.cwd = dir || process.cwd();
 
         const { verbose = false, debug = false } = settings || {};
 
         this.settings = { verbose, debug };
         this.parent = null;
+    }
+
+    get cwd() {
+        return this._cwd;
+    }
+
+    set cwd(v) {
+        this._cwd = v;
+        if (this.variables.initialCwd) {
+            this.variables.initialCwd = v;
+        }
+        this.variables.cwd = v;
+        this.variables.WORKING_DIRECTORY = v;
     }
 
     setFromProcess(process) {
@@ -27,6 +42,7 @@ class Environment {
         else {
             fork = new Environment(this.parsePath(subFolder), this.settings);
         }
+
         fork.parent = this;
         fork.variables = JSON.parse(JSON.stringify(this.variables));
         return fork;
