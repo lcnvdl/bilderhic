@@ -13,7 +13,20 @@ class XmlHelper {
             const tag = result[3];
 
             if (!ignoreTags.includes(tag)) {
-                finalContent = finalContent.replace(all, "/>");
+                const index = finalContent.indexOf(all);
+                let beginIndex = index;
+
+                while (beginIndex > 0 && finalContent[--beginIndex] != "<");
+
+                let tagName = finalContent.substring(beginIndex + 1, index).trim();
+
+                if (tagName.includes(" ")) {
+                    tagName = tagName.substr(0, tagName.indexOf(" "));
+                }
+
+                if (all.includes(tagName)) {
+                    finalContent = finalContent.replace(all, " />");
+                }
             }
         }
 
