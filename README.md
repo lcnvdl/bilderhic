@@ -1,7 +1,7 @@
 # bilderhic
 Bilderhic is a smart and simple command tool for automatization.
 
-## How it works?
+## How does it work?
 You have to create a pipe file.
 Bilderhic will run the commands inside your file.
 The commands of the pipe file can be Bilderhic commands, 
