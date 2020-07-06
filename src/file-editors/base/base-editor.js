@@ -35,6 +35,10 @@ class BaseEditor {
     }
 
     configure(key, value) {
+        if (value && typeof value === "string") {
+            value = value.trim();
+        }
+        
         this.options[key] = value;
     }
 

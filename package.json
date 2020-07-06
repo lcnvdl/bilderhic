@@ -20,6 +20,8 @@
     "example3:debug": "node index.js counter.txt ./test/files/ -d",
     "example4": "node index.js file_reader.txt ./test/files/",
     "example4:debug": "node index.js file_reader.txt ./test/files/ -d",
+    "example5": "node index.js file_writer.txt ./test/files/",
+    "example5:debug": "node index.js file_writer.txt ./test/files/ -d",
     "test": "mocha",
     "publish:lib": "node index.js publish.txt"
   },

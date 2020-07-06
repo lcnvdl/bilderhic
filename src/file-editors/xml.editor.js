@@ -1,6 +1,7 @@
 const ObjectEditor = require("./base/object-editor");
 const fs = require("fs");
 const parser = require('fast-xml-parser');
+const XmlHelper = require("./helpers/xml.helper");
 const JsonToXmlParser = parser.j2xParser;
 
 const defaultOptions = {
@@ -87,8 +88,11 @@ class XmlFileEditor extends ObjectEditor {
     }
 
     configure(key, value) {
-        if (key === "format") {
-            value = value == "true";
+        if (value === "true") {
+            value = true;
+        }
+        else if (value === "false") {
+            value = false;
         }
 
         super.configure(key, value);
@@ -141,6 +145,17 @@ class XmlFileEditor extends ObjectEditor {
     save(newFilename) {
         this._assertOpen();
         let finalContent = this.serialize();
+
+        if (this.options.selfClosingTags) {
+            let ignores = [];
+
+            if (this.options.selfClosingTagsIgnores && this.options.selfClosingTagsIgnores != "") {
+                ignores = this.options.selfClosingTagsIgnores.trim().split(",");
+            }
+
+            finalContent = XmlHelper.generateSelfClosingTags(finalContent, ignores);
+        }
+
         fs.writeFileSync(newFilename || this.file, finalContent, "utf8");
     }
 

@@ -29,7 +29,7 @@
             "name": "Iniciar programa (Prueba)",
             "program": "${workspaceFolder}\\index.js",
             "args": [
-                "eachFile.txt",
+                "file_writer.txt",
                 "test/files",
                 "-vb"
             ],

@@ -1,0 +1,8 @@
+:open file2.xml
+    -   configure selfClosingTags = true
+    -   configure selfClosingTagsIgnores = i
+    -   set note.id = 2
+    -   save
+    -   close
+
+exit
