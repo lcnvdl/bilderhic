@@ -1,0 +1,8 @@
+:open config.xml
+    -   configure selfClosingTags = true
+    -   configure selfClosingTagsIgnores = i
+    -   set widget.id = 2
+    -   save
+    -   close
+
+exit
