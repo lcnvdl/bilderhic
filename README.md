@@ -1,3 +1,5 @@
+<img src="https://lucianorasente.com/public_img/bhic.png" style="max-width:100px;width:100%;">
+
 # bilderhic
 Bilderhic is a smart and simple command tool for automatization.
 
