@@ -4,6 +4,7 @@ const DelCommand = require("../del/index");
 
 class RenCommand extends CommandBase {
     async run(args) {
+
         let file1 = this.parsePath(args[0]);
         let file2 = this.parsePath(args[1]);
         let overwrite = false;
@@ -19,6 +20,10 @@ class RenCommand extends CommandBase {
 
         if (!fs.existsSync(file1)) {
             throw new Error(`The file or folder ${file1} doesn't exists`);
+        }
+
+        if (args[0] === args[1]) {
+            return this.codes.success;
         }
 
         if (fs.existsSync(file2)) {
