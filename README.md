@@ -99,7 +99,14 @@ DOC
 DOC
 
 #### > run command
-DOC
+
+##### Description
+Renames a file or a folder.
+
+##### Usage
+```bash
+ren <origin> <target> [--overwrite or -w]
+```
 
 #### > exit command
 
