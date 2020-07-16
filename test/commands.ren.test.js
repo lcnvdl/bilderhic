@@ -10,7 +10,6 @@ const folder = __dirname;
 let env = new Environment(path.join(folder, "./files"), {});
 let cmd = new RenCommand(env);
 
-
 describe("RenCommand", () => {
     beforeEach(() => {
         fs.writeFileSync(path.join(folder, "./files/ren.txt"), "delete.me", "utf8");
