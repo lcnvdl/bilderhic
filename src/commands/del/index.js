@@ -21,13 +21,27 @@ const deleteFolderRecursive = function (folder, self) {
 };
 
 class DelCommand extends CommandBase {
+    constructor(env) {
+        super(env);
+        this.quiet = false;
+    }
+
     run(args) {
         if (Array.isArray(args)) {
+            if (args.some(m => m === "--quiet" || m === "-q")) {
+                this.quiet = true;
+                args = args.filter(m => m[0] !== "-");
+            }
+
             args.forEach(arg => this.run(arg));
             return this.codes.success;
         }
 
         args = args.trim();
+
+        if (args === "--quiet" || args === "-q") {
+            return this.codes.invalidArguments;
+        }
 
         if (args.indexOf(":/") !== -1 || args[0] === "/") {
             throw new Error("Operation not allowed");
@@ -46,8 +60,14 @@ class DelCommand extends CommandBase {
             fs.unlinkSync(fileOrFolder);
             this.info(`File ${fileOrFolder} deleted`);
         }
-        
+
         return this.codes.success;
+    }
+
+    info(m) {
+        if (!this.quiet) {
+            super.info(m);
+        }
     }
 }
 

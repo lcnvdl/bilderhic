@@ -1,0 +1,15 @@
+env set value 1
+
+:if ([value] === 2)
+  echo Error: This shouldn't be visible
+
+echo This should be visible
+
+:if ([value] === 1)
+:begin
+  echo Also this should be visible
+  env set value 2
+:end
+
+:if ([value] === 2)
+  echo Now this should be visible

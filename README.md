@@ -137,6 +137,12 @@ exit [pipe]
 ```bash
 :if <conditions>
 ```
+```bash
+:if <conditions>
+:begin
+    <instructions here>
+:end
+```
 
 ## File edition
 Text editors: TXT

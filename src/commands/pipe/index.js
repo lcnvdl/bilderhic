@@ -90,7 +90,10 @@ class Pipe extends CommandBase {
             throw new Error(`${command} (${current}) is not a Command`);
         }
 
-        this.info("> " + current);
+        if (this.environment.settings.verbose) {
+            this.info("> " + current);
+        }
+
         await this.breakpoint();
 
         let result = command.run(cmds);
@@ -120,6 +123,12 @@ class Pipe extends CommandBase {
         else if (cmd[0] === ":break") {
             await this.breakpoint("Manual breakpoint");
         }
+        else if (cmd[0] === ":begin") {
+            this.debug("Begin");
+        }
+        else if (cmd[0] === ":end") {
+            this.debug("End");
+        }
         else if (cmd[0] === ":eval") {
             this.info(current);
             await this.breakpoint();
@@ -140,10 +149,19 @@ class Pipe extends CommandBase {
             const result = safeEval(condition);
 
             if (!result) {
-                instructions.shift();
+                const next = instructions.shift();
+                if (next === ":begin") {
+                    do {
+                        next = instructions.shift();
+                    }
+                    while (next !== ":end");
+                }
             }
 
-            this.info(`Inline if eq command success with ${result}`);
+            if (this.environment.settings.verbose) {
+                this.debug(`Inline if succed with ${result}`);
+            }
+
             await this.breakpoint();
         }
         else if (cmd[0] === ":open") {
