@@ -36,17 +36,15 @@ class JsonFileEditor extends ObjectEditor {
     }
 
     getFirst(selector) {
-        let current = this.object;
-        let members = selector.split(".");
+        const members = selector.split(".");
+        const current = this.object;
 
-        for (let i = 0; i < members.length; i++) {
-            return current[members[i]];
-        }
+        return current[members[0]];
     }
 
     set(selector, value) {
+        const members = selector.split(".");
         let current = this.object;
-        let members = selector.split(".");
 
         for (let i = 0; i < members.length; i++) {
             if (i === members.length - 1) {

@@ -149,7 +149,7 @@ class Pipe extends CommandBase {
             const result = safeEval(condition);
 
             if (!result) {
-                const next = instructions.shift();
+                let next = instructions.shift();
                 if (next === ":begin") {
                     do {
                         next = instructions.shift();

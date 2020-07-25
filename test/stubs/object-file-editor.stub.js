@@ -1,10 +1,9 @@
 const BaseEditor = require("../../src/file-editors/base/base-editor");
-
-const BaseEditor = require("./base/base-editor");
 const fs = require("fs");
 
 class ObjectFileEditorStub extends BaseEditor {
     constructor() {
+        super();
         this.object = null;
         this.file = null;
         this.onClose = null;
