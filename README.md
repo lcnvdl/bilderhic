@@ -114,6 +114,27 @@ Parses a base-64 string.
 base64 <text>
 or
 base64 <text> > <filename>
+or
+base64 <text> >> <environment variable>
+```
+
+##### Example
+```bash
+base64 YmlsZGVyaGlj > mistery.txt
+```
+
+#### > cat command
+
+##### Description
+Reads a file and prints its content.
+
+##### Usage
+```bash
+cat <filename>
+or
+cat <filename> > <filename>
+or
+cat <filename> >> <environment variable>
 ```
 
 ##### Example
