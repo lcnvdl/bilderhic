@@ -1,4 +1,5 @@
 module.exports = {
+    base64: require("./base64/index"),
     cd: require("./cd/index"),
     copy: require("./copy/index"),
     del: require("./del/index"),

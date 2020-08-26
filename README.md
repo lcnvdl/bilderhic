@@ -104,6 +104,23 @@ DOC
 #### > ren command
 DOC
 
+#### > base64 command
+
+##### Description
+Parses a base-64 string.
+
+##### Usage
+```bash
+base64 <text>
+or
+base64 <text> > <filename>
+```
+
+##### Example
+```bash
+base64 YmlsZGVyaGlj > mistery.txt
+```
+
 #### > run command
 
 ##### Description

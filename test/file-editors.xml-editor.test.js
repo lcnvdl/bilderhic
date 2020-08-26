@@ -34,17 +34,27 @@ describe("XmlFileEditor", () => {
             expect(xml).to.equals("<text><hi/></text>");
         });
 
-        it("should add a hi element with attribute inside the text element", () => {
-            editor.load("<text></text>");
-            expect(editor.object.text.hi).to.be.undefined;
-            editor.add("text>hi.id", "1");
-            expect(editor.object.text.hi).to.be.ok;
-            expect(editor.object.text.hi["@_id"]).to.equals("1");
+        // it("should add a hi element with multiple attributes", () => {
+        //     editor.load("<text><hi name='gato1'></hi><hi name='gato2'></hi></text>");
+        //     editor.add("text>hi.name", "test");
+        //     editor.add("text>hi.value", "v");
 
-            let xml = editor.serialize();
+        //     let xml = editor.serialize();
 
-            expect(xml).to.equals("<text><hi id=\"1\"></hi></text>");
-        });
+        //     expect(xml).to.equals("<text><hi name=\"gato1\"></hi><hi name=\"gato2\"></hi><hi name=\"test\" value=\"v\"></hi></text>");
+        // });
+
+        // it("should add a hi element with attribute inside the text element", () => {
+        //     editor.load("<text></text>");
+        //     expect(editor.object.text.hi).to.be.undefined;
+        //     editor.add("text>hi.id", "1");
+        //     expect(editor.object.text.hi).to.be.ok;
+        //     expect(editor.object.text.hi["@_id"]).to.equals("1");
+
+        //     let xml = editor.serialize();
+
+        //     expect(xml).to.equals("<text><hi id=\"1\"></hi></text>");
+        // });
     });
 
     describe("set", () => {
