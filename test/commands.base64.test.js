@@ -13,18 +13,27 @@ let cmd = new Base64Command(env);
 describe("Base64Command", () => {
 
   afterEach(() => {
-      if (fs.existsSync(path.join(folder, "./files/b64.txt")))
-          fs.unlinkSync(path.join(folder, "./files/b64.txt"));
+    if (fs.existsSync(path.join(folder, "./files/b64.txt")))
+      fs.unlinkSync(path.join(folder, "./files/b64.txt"));
   });
 
-  it("base64 should work fine", async () => {
+  it("base64 to function", async () => {
     let content = null;
     await cmd.run(["cHJ1ZWJh", m => content = m]);
 
     expect(content).to.equals("prueba");
   });
 
-  it("base64 should write a file", async () => {
+  it("base64 to environment", async () => {
+    let content = null;
+    await cmd.run(["cHJ1ZWJh", ">>", "content"]);
+
+    content = env.getVariables()["content"];
+
+    expect(content).to.equals("prueba");
+  });
+
+  it("base64 to file", async () => {
     let content = null;
     await cmd.run(["cHJ1ZWJh", ">", "b64.txt"]);
 
