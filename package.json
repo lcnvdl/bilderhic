@@ -1,6 +1,6 @@
 {
   "name": "bilderhic",
-  "version": " 1.0.51",
+  "version": " 1.0.52",
   "description": "Bilderhic (bhic) is a smart and simple command tool for automatization.",
   "preferGlobal": true,
   "main": "index.js",
