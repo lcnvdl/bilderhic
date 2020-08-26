@@ -2,6 +2,7 @@
 
 const path = require("path");
 const inquirer = require('inquirer');
+const Log = require("../../log");
 
 class CommandBase {
     /**
@@ -43,16 +44,20 @@ class CommandBase {
     }
 
     info(msg) {
-        console.log(msg);
+        Log.info(msg);
+    }
+
+    verbose(msg) {
+        Log.verbose(msg);
     }
 
     debug(msg, obj) {
         if (this.environment.settings.debug || this.environment.settings.verbose) {
             if (typeof obj === 'undefined') {
-                console.log(msg);
+                Log.debug(msg);
             }
             else {
-                console.log(msg, obj);
+                Log.debug(msg, obj);
             }
         }
     }
@@ -64,7 +69,7 @@ class CommandBase {
 
 async function breakpoint(env, message) {
     if (!env) {
-        console.warn("Breakpoint without environment. Ignored.");
+        Log.warn("Breakpoint without environment. Ignored.");
         return;
     }
 
@@ -73,10 +78,10 @@ async function breakpoint(env, message) {
 
     if (message) {
         if (message.error) {
-            console.error(message.error);
+            Log.error(message.error);
         }
         else {
-            console.log(message);
+            Log.write(message);
         }
     }
 

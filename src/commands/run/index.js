@@ -1,5 +1,6 @@
 const child_process = require("child_process");
 const CommandBase = require("../base/command-base");
+const Log = require("../../log");
 
 class RunCommand extends CommandBase {
     run(args) {
@@ -14,13 +15,13 @@ class RunCommand extends CommandBase {
                 child.stdout.setEncoding('utf8');
                 child.stdout.on('data', function (data) {
                     data = data.toString();
-                    console.log(data);
+                    Log.write(data);
                 });
 
                 child.stderr.setEncoding('utf8');
                 child.stderr.on('data', function (data) {
                     data = data.toString();
-                    console.error(data);
+                    Log.error(data);
                 });
 
                 child.on('close', code => {

@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
 if (!process.argv.slice(2).length) {
-    console.log("bhic <file>")
+    console.log("bhic <file> [--debug or -d] [--verbose or -vb]")
     process.exit();
 }
 
 const Environment = require("./src/environment");
 const Pipe = require("./src/commands/pipe/index");
+const Log = require("./src/log");
 
 let file;
 let cwd;
@@ -22,9 +23,11 @@ for (let i = 0; i < process.argv.slice(2).length; i++) {
         a = a.toLowerCase();
         if (a === "--debug" || a === "-d") {
             settings.debug = true;
+            Log.debug("Debug mode on");
         }
         else if (a === "--verbose" || a === "-vb") {
             settings.verbose = true;
+            Log.verbose("Verbose mode on");
         }
     }
     else if (!file) {
@@ -34,7 +37,7 @@ for (let i = 0; i < process.argv.slice(2).length; i++) {
         cwd = a;
     }
     else {
-        console.error("Wrong number of parameters.");
+        Log.error("Wrong number of parameters.");
         return;
     }
 }
@@ -46,7 +49,7 @@ const env = new Environment(cwd, settings);
 env.setFromProcess(process);
 
 new Pipe(env).loadFromFile(file).then(() => {
-    console.log("Program finished");
+    Log.success("Program finished");
 }, err => {
-    console.error(err);
+    Log.error(err);
 });

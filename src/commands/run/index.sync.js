@@ -1,6 +1,7 @@
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 const CommandBase = require("../base/command-base");
+const Log = require("../../log");
 
 class RunCommand extends CommandBase {
     async run(args) {
@@ -11,11 +12,11 @@ class RunCommand extends CommandBase {
         const { stdout, stderr } = await exec(command, { cwd: this.environment.cwd });
 
         if (stdout && stdout !== "") {
-            console.log(stdout);
+            Log.write(stdout);
         }
 
         if (stderr && stderr !== "") {
-            console.error(stderr);
+            Log.error(stderr);
         }
 
         return this.codes.success;

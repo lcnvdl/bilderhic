@@ -1,6 +1,6 @@
 {
   "name": "bilderhic",
-  "version": " 1.0.50",
+  "version": " 1.0.51",
   "description": "Bilderhic (bhic) is a smart and simple command tool for automatization.",
   "preferGlobal": true,
   "main": "index.js",
@@ -22,6 +22,8 @@
     "example4:debug": "node index.js file_reader.txt ./test/files/ -d",
     "example5": "node index.js file_writer.txt ./test/files/",
     "example5:debug": "node index.js file_writer.txt ./test/files/ -d",
+    "example6": "node index.js prompt.txt ./test/files/",
+    "example6:debug": "node index.js prompt.txt ./test/files/ -d",
     "test": "mocha",
     "publish:lib": "node index.js publish.txt"
   },
@@ -45,9 +47,10 @@
     "mocha": "^6.2.3"
   },
   "dependencies": {
+    "colors": "^1.4.0",
     "fast-xml-parser": "^3.17.4",
     "fs-extra": "^8.1.0",
-    "inquirer": "^7.0.0",
+    "inquirer": "^7.3.3",
     "safe-eval": "^0.4.1",
     "yaml": "^1.7.2"
   }

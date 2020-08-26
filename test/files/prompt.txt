@@ -1,0 +1,5 @@
+env prompt name -m What is your name?
+
+echo my name is [name]
+
+exit

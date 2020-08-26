@@ -3,6 +3,6 @@
   <from>Jani</from>
   <heading>Reminder</heading>
   <body>Don't forget me this weekend!</body>
-  <br/>
+  <br />
   <i id="ignore-me"></i>
 </note>

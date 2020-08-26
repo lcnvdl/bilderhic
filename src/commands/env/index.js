@@ -1,9 +1,10 @@
 const fs = require('fs');
 const CommandBase = require("../base/command-base");
 const YAML = require('yaml');
+const inquirer = require('inquirer');
 
 class EnvCommand extends CommandBase {
-    run(args) {
+    async run(args) {
         if (args[0] === "clear") {
             this.environment.variables = {};
             return this.codes.success;
@@ -24,8 +25,40 @@ class EnvCommand extends CommandBase {
             this.debug(this.environment.variables);
             return this.codes.success;
         }
-        else if (args[0] === "add") {
+        else if (args[0] === "prompt") {
+            const key = args[1];
+            let message = null;
 
+            for (let i = 2; i < args.length; i++) {
+                const arg = args[i];
+                if (arg == "-m" || arg == "--message") {
+                    message = "";
+                }
+                else if (message !== null) {
+                    if (message === "") {
+                        message += arg;
+                    }
+                    else {
+                        message += " " + arg;
+                    }
+                }
+            }
+
+            const answers = await inquirer.prompt([{
+                type: "input",
+                name: "answer",
+                message
+            }]);
+
+            const value = answers.answer;
+            const obj = {};
+            obj[key] = value;
+            // obj[key] = this.environment.applyVariables(value);
+            this.environment.setVariables(obj, false);
+            this.debug(this.environment.variables);
+            return this.codes.success;
+        }
+        else if (args[0] === "add") {
             let parent = 0;
             if (args[3]) {
                 parent = +args[3];

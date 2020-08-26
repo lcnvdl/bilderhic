@@ -5,6 +5,7 @@ const commands = require("../index");
 const OpenCommand = require("../open/index");
 const safeEval = require('safe-eval');
 const CommandsExtractor = require("../helpers/commands-extractor");
+const Log = require("../../log");
 
 class Pipe extends CommandBase {
     constructor(env, pipeId) {
@@ -91,7 +92,7 @@ class Pipe extends CommandBase {
         }
 
         if (this.environment.settings.verbose) {
-            this.info("> " + current);
+            this.verbose("> " + current);
         }
 
         await this.breakpoint();
@@ -159,7 +160,7 @@ class Pipe extends CommandBase {
             }
 
             if (this.environment.settings.verbose) {
-                this.debug(`Inline if succed with ${result}`);
+                this.verbose(`Inline if succed with ${result}`);
             }
 
             await this.breakpoint();
