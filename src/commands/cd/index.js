@@ -5,7 +5,15 @@ const CommandBase = require("../base/command-base");
 class CdCommand extends CommandBase {
     run(args) {
         if (!args || args.length === 0) {
-            return this.codes.missingArguments;
+            this.info(this.environment.cwd);
+            return this.codes.success;
+        }
+
+        const { isOrigin, outTo } = this.parseOrigin(args);
+
+        if (isOrigin) {
+            outTo(this.environment.cwd);
+            return this.codes.success;
         }
 
         let folder = this.parsePath(args[0]);
@@ -17,7 +25,7 @@ class CdCommand extends CommandBase {
         if (!fs.lstatSync(folder).isDirectory()) {
             throw new Error(`The path ${folder} is not a folder`);
         }
-        
+
         this.environment.cwd = folder;
 
         return this.codes.success;

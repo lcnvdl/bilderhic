@@ -1,6 +1,6 @@
 {
   "name": "bilderhic",
-  "version": " 1.0.53",
+  "version": " 1.0.54",
   "description": "Bilderhic (bhic) is a smart and simple command tool for automatization.",
   "preferGlobal": true,
   "main": "index.js",
@@ -25,6 +25,7 @@
     "example6": "node index.js prompt.txt ./test/files/",
     "example6:debug": "node index.js prompt.txt ./test/files/ -d",
     "test": "mocha",
+    "test:coverage": "nyc --reporter=text mocha",
     "publish:lib": "node index.js publish.txt"
   },
   "repository": {
@@ -44,7 +45,8 @@
   "homepage": "https://github.com/lcnvdl/node-build#readme",
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.2.3"
+    "mocha": "^6.2.3",
+    "nyc": "^15.1.0"
   },
   "dependencies": {
     "colors": "^1.4.0",

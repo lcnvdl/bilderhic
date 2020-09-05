@@ -11,22 +11,11 @@ class Base64Command extends CommandBase {
 
     let outTo = null;
 
-    if(args.length > 1) {
-      if (typeof args[1] === "function") {
-        outTo = args[1];
-        this.debug("Base64 to a function");
-      }
-      else if (args[1] === ">") {
-        outTo = this.parsePath(args[2]);
-        this.debug("Base64 to a file");
-      }
-      else if (args[1] === ">>") {
-        const key = args[2];
-        outTo = (m => this.environment.setVariable(key, m));
-        this.debug(`Base64 to environment variable ${key}`);
-      }
-      else {
-        this.debug("Base64 to console");
+    if (args.length > 1) {
+      const result = this.parseOrigin(args, 1);
+
+      if (result.isOrigin) {
+        outTo = result.outTo;
       }
     }
     else {

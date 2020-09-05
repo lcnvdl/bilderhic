@@ -85,7 +85,10 @@ class EnvCommand extends CommandBase {
 
             let arg2 = this.environment.applyVariables(args[2]);
 
-            if (arg2 === null || arg2 === undefined || isNaN(arg2)) {
+            if (arg2 === undefined) {
+                arg2 = 1;
+            }
+            else if (arg2 === null || isNaN(arg2)) {
                 this.debug("The parameter is not a valid number");
                 return this.codes.invalidArguments;
             }

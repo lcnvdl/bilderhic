@@ -91,15 +91,19 @@ class Pipe extends CommandBase {
             throw new Error(`${command} (${current}) is not a Command`);
         }
 
-        if (this.environment.settings.verbose) {
-            this.verbose("> " + current);
-        }
-
-        await this.breakpoint();
+        await this.breakpoint("> " + current);
 
         let result = command.run(cmds);
 
-        this.debug(" - " + (result === this.codes.invalidArguments ? "Invalid arguments" : (result === this.codes.missingArguments ? "Missing arguments" : "Success")));
+        if(result === this.codes.invalidArguments) {
+            this.debugError(" - Invalid arguments");
+        }
+        else if (result === this.codes.missingArguments) {
+            this.debugError(" - Missing arguments");
+        }
+        else {
+            this.debugSuccess(" - Success");
+        }
 
         if (result instanceof Promise) {
             return await result;

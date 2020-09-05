@@ -12,10 +12,6 @@ class CommandBase {
         this.environment = env;
     }
 
-    get command() {
-        return null;
-    }
-
     get codes() {
         return {
             missingArguments: -2,
@@ -43,6 +39,43 @@ class CommandBase {
         }
     }
 
+    /**
+     * @param {Array} args Args
+     * @param {number} [offset] Offset
+     */
+    parseOrigin(args, offset) {
+        const index = (offset || 0);
+        let outTo = null;
+        let isOrigin = null;
+
+        if (args.length > index) {
+            if (typeof args[index] === "function") {
+                outTo = args[index];
+                isOrigin = true;
+                this.debug("Command to a function");
+            }
+            else if (args[index] === ">") {
+                outTo = this.parsePath(args[index + 1]);
+                isOrigin = true;
+                this.debug("Command to a file");
+            }
+            else if (args[index] === ">>") {
+                const key = args[index + 1];
+                outTo = (m => this.environment.setVariable(key, m));
+                isOrigin = true;
+                this.debug(`Command to environment variable ${key}`);
+            }
+            else {
+                isOrigin = false;
+            }
+        }
+
+        return {
+            isOrigin,
+            outTo
+        };
+    }
+
     info(msg) {
         Log.info(msg);
     }
@@ -58,6 +91,28 @@ class CommandBase {
             }
             else {
                 Log.debug(msg, obj);
+            }
+        }
+    }
+
+    debugError(msg, obj) {
+        if (this.environment.settings.debug || this.environment.settings.verbose) {
+            if (typeof obj === 'undefined') {
+                Log.error(msg);
+            }
+            else {
+                Log.error(msg, obj);
+            }
+        }
+    }
+
+    debugSuccess(msg, obj) {
+        if (this.environment.settings.debug || this.environment.settings.verbose) {
+            if (typeof obj === 'undefined') {
+                Log.success(msg);
+            }
+            else {
+                Log.success(msg, obj);
             }
         }
     }
@@ -81,7 +136,7 @@ async function breakpoint(env, message) {
             Log.error(message.error);
         }
         else {
-            Log.write(message);
+            Log.debug(message);
         }
     }
 

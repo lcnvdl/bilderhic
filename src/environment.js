@@ -92,6 +92,10 @@ class Environment {
     }
 
     applyVariables(str) {
+        if(!str) {
+            return str;
+        }
+
         let finalStr = str;
         let variables = this.getVariables();
 
