@@ -41,6 +41,10 @@ class Environment {
         return this.settings.verbose;
     }
 
+    setDebugMode(enabled) {
+        this.settings.debug = enabled;
+    }
+
     setFromProcess(process) {
         this.setVariables(process.env);
     }
@@ -104,7 +108,7 @@ class Environment {
     }
 
     applyVariables(str) {
-        if(!str) {
+        if (!str) {
             return str;
         }
 

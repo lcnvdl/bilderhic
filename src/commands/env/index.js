@@ -16,6 +16,24 @@ class EnvCommand extends CommandBase {
             this.debug(this.environment.variables);
             return this.codes.success;
         }
+        else if (args[0] === "debug") {
+            if (args.length === 1) {
+                this.info(`Debug mode is ${this.environment.isDebugEnabled ? "enabled" : "disabled"}`);
+            }
+            else if (args[1] === "enable" || args[1] === "on") {
+                this.environment.setDebugMode(true);
+                this.debug("Debug mode enabled");
+            }
+            else if (args[1] === "disable" || args[1] === "off") {
+                this.environment.setDebugMode(false);
+                this.debug("Debug mode disabled");
+            }
+            else {
+                return this.codes.invalidArguments;
+            }
+
+            return this.codes.success;
+        }
         else if (args[0] === "set") {
             const key = args[1];
             const value = args[2];

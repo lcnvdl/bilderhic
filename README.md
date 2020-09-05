@@ -76,6 +76,11 @@ env load File.yml
 env clear
 ```
 
+> Change the debug mode
+```bash
+env debug <enable or disable>
+```
+
 #### > copy command
 
 ##### Description
