@@ -85,7 +85,7 @@ class CommandBase {
     }
 
     debug(msg, obj) {
-        if (this.environment.settings.debug || this.environment.settings.verbose) {
+        if (this.environment.isDebugOrVerbose) {
             if (typeof obj === 'undefined') {
                 Log.debug(msg);
             }
@@ -96,7 +96,7 @@ class CommandBase {
     }
 
     debugError(msg, obj) {
-        if (this.environment.settings.debug || this.environment.settings.verbose) {
+        if (this.environment.isdebugorverbose) {
             if (typeof obj === 'undefined') {
                 Log.error(msg);
             }
@@ -107,7 +107,7 @@ class CommandBase {
     }
 
     debugSuccess(msg, obj) {
-        if (this.environment.settings.debug || this.environment.settings.verbose) {
+        if (this.environment.isdebugorverbose) {
             if (typeof obj === 'undefined') {
                 Log.success(msg);
             }
@@ -122,14 +122,19 @@ class CommandBase {
     }
 }
 
+/**
+ * @param {Environment} env Environment
+ * @param {string} message Message
+ */
 async function breakpoint(env, message) {
     if (!env) {
         Log.warn("Breakpoint without environment. Ignored.");
         return;
     }
 
-    if (!env.settings.debug)
+    if (!env.isDebugEnabled) {
         return;
+    }
 
     if (message) {
         if (message.error) {

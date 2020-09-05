@@ -29,6 +29,18 @@ class Environment {
         this.variables.WORKING_DIRECTORY = v;
     }
 
+    get isDebugOrVerbose() {
+        return this.isDebugEnabled || this.isVerboseEnabled;
+    }
+
+    get isDebugEnabled() {
+        return this.settings.debug;
+    }
+
+    get isVerboseEnabled() {
+        return this.settings.verbose;
+    }
+
     setFromProcess(process) {
         this.setVariables(process.env);
     }

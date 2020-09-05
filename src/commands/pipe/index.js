@@ -1,3 +1,5 @@
+/** @typedef {import("../../environment")} Environment */
+
 const CommandBase = require("../base/command-base");
 const fs = require('fs');
 const path = require("path");
@@ -5,13 +7,15 @@ const commands = require("../index");
 const OpenCommand = require("../open/index");
 const safeEval = require('safe-eval');
 const CommandsExtractor = require("../helpers/commands-extractor");
-const Log = require("../../log");
 
 class Pipe extends CommandBase {
+    /**
+     * @param {Environment} env Environment
+     * @param {string} [pipeId] Pipe ID
+     */
     constructor(env, pipeId) {
-        super();
+        super(env);
         this.pipeId = pipeId || "1";
-        this.environment = env;
     }
 
     async loadFromFile(path) {
@@ -57,8 +61,6 @@ class Pipe extends CommandBase {
                         process.exit(0);
                     }
                 }
-
-                // await this.breakpoint();
             }
         }
         catch (error) {
@@ -163,7 +165,7 @@ class Pipe extends CommandBase {
                 }
             }
 
-            if (this.environment.settings.verbose) {
+            if (this.environment.isVerboseEnabled) {
                 this.verbose(`Inline if succed with ${result}`);
             }
 
