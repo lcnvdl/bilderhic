@@ -1,0 +1,7 @@
+cd xyz_ --test >> nonExisting
+
+echo Should be false: [nonExisting]
+
+cd ..\files --test >> existing
+
+echo Should be true: [existing]

@@ -24,6 +24,8 @@
     "example5:debug": "node index.js file_writer.txt ./test/files/ -d",
     "example6": "node index.js prompt.txt ./test/files/",
     "example6:debug": "node index.js prompt.txt ./test/files/ -d",
+    "example7": "node index.js cd_test.txt ./test/files/",
+    "example7:debug": "node index.js cd_test.txt ./test/files/ -d",
     "test": "mocha",
     "test:coverage": "nyc --reporter=text mocha",
     "publish:lib": "node index.js publish.txt"
