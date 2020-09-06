@@ -9,7 +9,7 @@ class CdCommand extends CommandBase {
             return this.codes.success;
         }
 
-        const { isOrigin, outTo } = this.parseOrigin(args);
+        let { isOrigin, outTo } = this.parseOrigin(args);
 
         if (isOrigin) {
             outTo(this.environment.cwd);
@@ -17,6 +17,30 @@ class CdCommand extends CommandBase {
         }
 
         let folder = this.parsePath(args[0]);
+
+        if (args[1] === "-t" || args[1] === "--test") {
+            const result = this.parseOrigin(args, 2);
+            let existence = true;
+
+            if (!fs.existsSync(folder)) {
+                existence = false;
+            }
+            else if (!fs.lstatSync(folder).isDirectory()) {
+                existence = false;
+            }
+
+            if (result.isOrigin) {
+                result.outTo(existence);
+            }
+            else if (existence) {
+                this.success(`The folder ${folder} exists.`);
+            }
+            else {
+                this.error(`The folder ${folder} doesn't exists.`);
+            }
+
+            return this.codes.success;
+        }
 
         if (!fs.existsSync(folder)) {
             throw new Error(`The folder ${folder} doesn't exists`);

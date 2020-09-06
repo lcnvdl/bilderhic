@@ -18,6 +18,10 @@ npm i -g bilderhic
 ## Usage
 ```bash
 bhic <file> [-vb or --verbose] [-d or --debug]
+
+or
+
+bhic [-vb or --verbose] [-d or --debug] [-c or --command] <single line command>
 ```
 
 ### ~ Bilderhic Commands ~

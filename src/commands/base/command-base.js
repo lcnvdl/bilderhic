@@ -80,6 +80,14 @@ class CommandBase {
         Log.info(msg);
     }
 
+    error(msg) {
+        Log.error(msg);
+    }
+
+    success(msg) {
+        Log.success(msg);
+    }
+
     verbose(msg) {
         Log.verbose(msg);
     }

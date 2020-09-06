@@ -32,4 +32,22 @@ describe("CdCommand", () => {
 
     expect(content).to.equals(envFolder);
   });
+
+  it("cd test navigation to environment (non existing folder)", async () => {
+    let content = null;
+    await cmd.run(["xyz_", "-t", ">>", "content"]);
+
+    content = env.getVariables()["content"];
+
+    expect(content).to.equals(false);
+  });
+
+  it("cd test navigation to environment (existing folder)", async () => {
+    let content = null;
+    await cmd.run([envFolder, "-t", ">>", "folderr"]);
+
+    content = env.getVariables()["folderr"];
+
+    expect(content).to.equals(true);
+  });
 });
