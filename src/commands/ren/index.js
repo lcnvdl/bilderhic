@@ -8,10 +8,14 @@ class RenCommand extends CommandBase {
         let file1 = this.parsePath(args[0]);
         let file2 = this.parsePath(args[1]);
         let overwrite = false;
+        let skipUnexisting = false;
 
-        if (args.length > 2) {
-            if (args[2] === "--overwrite" || args[2] === "-w") {
+        for (let i = 2; i < args.length; i++) {
+            if (args[i] === "--overwrite" || args[i] === "-w") {
                 overwrite = true;
+            }
+            else if (args[i] === "--skip-unexisting" || args[i] === "-sk") {
+                skipUnexisting = true;
             }
             else {
                 return this.codes.invalidArguments;
@@ -19,7 +23,12 @@ class RenCommand extends CommandBase {
         }
 
         if (!fs.existsSync(file1)) {
-            throw new Error(`The file or folder ${file1} doesn't exists`);
+            if (!skipUnexisting) {
+                throw new Error(`The file or folder ${file1} doesn't exists`);
+            }
+            else {
+                return this.codes.success;
+            }
         }
 
         if (args[0] === args[1]) {

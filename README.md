@@ -111,7 +111,13 @@ DOC
 DOC
 
 #### > ren command
-DOC
+Renames a file o a folder.
+
+##### Usage
+```bash
+ren <file or folder> <newName> [--skip-unexisting or -sk] [--overwrite or -o]
+```
+
 
 #### > base64 command
 

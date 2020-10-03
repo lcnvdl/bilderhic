@@ -36,6 +36,11 @@ describe("RenCommand", () => {
         expect(error).to.not.be.null;
     });
 
+    it("ren should NOT fail if file not exists with skip", async () => {
+        const code = await cmd.run(["non-existing.xyz", "existing.xyz", "--skip-unexisting"]);
+        expect(code).to.equals(0);
+    });
+
     it("ren should do nothing with same origin", async () => {
         await cmd.run(["ren.txt", "ren.txt"]);
     });
