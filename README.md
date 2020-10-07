@@ -176,6 +176,34 @@ Stops the pipe or the process.
 ```bash
 exit [pipe]
 ```
+#### > sleep command
+
+##### Description
+Waits until timer ends.
+
+##### Usage
+```bash
+sleep <time (ms)>
+```
+
+#### > beep command
+
+##### Description
+Makes a console beep sound.
+
+##### Usage
+```bash
+beep [times] [delay between beeps]
+```
+##### Examples
+```bash
+echo Beep!
+beep
+echo Beep! Beep!
+beep 2
+echo Beep! ... Beep! ... Beep!
+beep 3 1000
+```
 
 ### ~ Special Commands ~
 ```bash
@@ -246,3 +274,11 @@ Object editors: XML, HTML, JSON
 
 ## Examples
 bhic pipe.txt
+bhic -c echo Hi world!
+
+
+## Misc
+Multiple line command
+```bash
+bhic -c echo Running :eol: sleep 5000 :eol: beep :eol: echo Run finished
+```

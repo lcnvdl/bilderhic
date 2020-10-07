@@ -35,7 +35,6 @@ for (let i = 0; i < args.length; i++) {
         else if (a === "--command" || a === "-c") {
             command = "";
             for (let j = i + 1; j < args.length; j++) {
-                console.log(args[j]);
                 command += " " + args[j];
             }
 

@@ -3,10 +3,12 @@
 const CommandBase = require("../base/command-base");
 const fs = require('fs');
 const path = require("path");
-const commands = require("../index");
+const { loadCommands } = require("../load-commands");
 const OpenCommand = require("../open/index");
 const safeEval = require('safe-eval');
 const CommandsExtractor = require("../helpers/commands-extractor");
+
+let commands = null;
 
 class Pipe extends CommandBase {
     /**
@@ -28,7 +30,14 @@ class Pipe extends CommandBase {
     async load(str) {
         this.info(`Running pipe "${this.pipeId}"`);
 
+        if (!commands) {
+            commands = await loadCommands();
+        }
+
         await this.breakpoint();
+
+        str = str || "";
+        str = str.split(":eol:").join("\n");
 
         let instructions = str.split("\n")
             .map(m => m.trim())
@@ -48,6 +57,7 @@ class Pipe extends CommandBase {
                 }
                 else {
                     let code = await this._processCommand(current);
+
                     if (code === this.codes.invalidArguments) {
                         throw new Error(`Invalid arguments in instruction "${current}".`);
                     }
@@ -97,7 +107,7 @@ class Pipe extends CommandBase {
 
         let result = command.run(cmds);
 
-        if(result === this.codes.invalidArguments) {
+        if (result === this.codes.invalidArguments) {
             this.debugError(" - Invalid arguments");
         }
         else if (result === this.codes.missingArguments) {

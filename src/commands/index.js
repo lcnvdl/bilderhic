@@ -1,5 +1,6 @@
 module.exports = {
     base64: require("./base64/index"),
+    beep: require("./beep/index"),
     cd: require("./cd/index"),
     copy: require("./copy/index"),
     del: require("./del/index"),
@@ -8,5 +9,7 @@ module.exports = {
     pipe: require("./pipe/index"),
     ren: require("./ren/index"),
     run: require("./run/index"),
-    exit: require("./exit/index")
+    sleep: require("./sleep/index"),
+    exit: require("./exit/index"),
+    extension: require("./extension/index")
 };

@@ -1,7 +1,6 @@
 const fs = require('fs');
 const CommandBase = require("../base/command-base");
 const FileEditorsFactory = require("../../file-editors/file-editors.factory");
-const { isArray } = require('util');
 
 class OpenCommand extends CommandBase {
     async run(args) {
