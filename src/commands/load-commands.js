@@ -19,7 +19,7 @@ async function loadCommands() {
                         const entry = require(path.join(dir.commandsDir, file));
                         const name = match.substr(0, match.indexOf("/"));
 
-                        commands[name] = entry({ CommandBase });
+                        commands[name] = entry({ CommandBase, commands });
                     });
 
                     resolve(commands);
