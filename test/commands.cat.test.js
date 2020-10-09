@@ -1,14 +1,14 @@
-const CatCommand = require("../src/commands/cat/index");
-const Environment = require("../src/environment");
 const fs = require("fs");
 const path = require("path");
 
 const { expect } = require("chai");
+const Environment = require("../src/environment");
+const CatCommand = require("../src/commands/cat/index");
 
 const folder = __dirname;
 
-let env = new Environment(path.join(folder, "./files"), {});
-let cmd = new CatCommand(env);
+const env = new Environment(path.join(folder, "./files"), {});
+const cmd = new CatCommand(env);
 
 describe("CatCommand", () => {
   it("cat to function", async () => {
@@ -22,7 +22,7 @@ describe("CatCommand", () => {
     let content = null;
     await cmd.run(["cat.txt", ">>", "content"]);
 
-    content = env.getVariables()["content"];
+    content = env.getVariables().content;
 
     expect(content).to.equals("contenido");
   });

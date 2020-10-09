@@ -1,6 +1,5 @@
-const Log = require("../src/log");
-
 const { expect } = require("chai");
+const Log = require("../src/log");
 
 describe("Log", () => {
   it("shouldn't fail", () => {

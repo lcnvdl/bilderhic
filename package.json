@@ -47,6 +47,9 @@
   "homepage": "https://github.com/lcnvdl/node-build#readme",
   "devDependencies": {
     "chai": "^4.2.0",
+    "eslint": "^7.10.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.1",
     "mocha": "^6.2.3",
     "nyc": "^15.1.0"
   },

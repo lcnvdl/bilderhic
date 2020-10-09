@@ -1,4 +1,4 @@
-const fse = require('fs-extra');
+const fse = require("fs-extra");
 const CommandBase = require("../base/command-base");
 
 class CatCommand extends CommandBase {
@@ -7,7 +7,7 @@ class CatCommand extends CommandBase {
       return this.codes.missingArguments;
     }
 
-    let origin = this.parsePath(args[0]);
+    const origin = this.parsePath(args[0]);
     const content = fse.readFileSync(origin, "utf8");
 
     let outTo = null;
@@ -23,7 +23,6 @@ class CatCommand extends CommandBase {
     }
 
     await this.breakpoint();
-
 
     if (outTo) {
       if (typeof outTo === "function") {

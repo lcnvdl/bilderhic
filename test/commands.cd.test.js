@@ -1,15 +1,15 @@
-const CdCommand = require("../src/commands/cd/index");
-const Environment = require("../src/environment");
 const fs = require("fs");
 const path = require("path");
 
 const { expect } = require("chai");
+const Environment = require("../src/environment");
+const CdCommand = require("../src/commands/cd/index");
 
 const folder = __dirname;
 const envFolder = path.join(folder, "./files");
 
-let env = new Environment(envFolder, {});
-let cmd = new CdCommand(env);
+const env = new Environment(envFolder, {});
+const cmd = new CdCommand(env);
 
 describe("CdCommand", () => {
   it("should print the current directory if is empty", async () => {
@@ -28,7 +28,7 @@ describe("CdCommand", () => {
     let content = null;
     await cmd.run([">>", "content"]);
 
-    content = env.getVariables()["content"];
+    content = env.getVariables().content;
 
     expect(content).to.equals(envFolder);
   });
@@ -37,7 +37,7 @@ describe("CdCommand", () => {
     let content = null;
     await cmd.run(["xyz_", "-t", ">>", "content"]);
 
-    content = env.getVariables()["content"];
+    content = env.getVariables().content;
 
     expect(content).to.equals(false);
   });
@@ -46,7 +46,7 @@ describe("CdCommand", () => {
     let content = null;
     await cmd.run([envFolder, "-t", ">>", "folderr"]);
 
-    content = env.getVariables()["folderr"];
+    content = env.getVariables().folderr;
 
     expect(content).to.equals(true);
   });

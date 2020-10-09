@@ -1,4 +1,4 @@
-const fse = require('fs-extra');
+const fse = require("fs-extra");
 const CommandBase = require("../base/command-base");
 
 class Base64Command extends CommandBase {
@@ -25,8 +25,8 @@ class Base64Command extends CommandBase {
     await this.breakpoint();
 
     content = this.environment.applyVariables(content);
-    const buff = new Buffer(content, 'base64');
-    content = buff.toString('utf8');
+    const buff = new Buffer(content, "base64");
+    content = buff.toString("utf8");
 
     if (outTo) {
       if (typeof outTo === "function") {

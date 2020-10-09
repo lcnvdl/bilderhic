@@ -1,14 +1,14 @@
-const MkDirCommand = require("../src/commands/mkdir/index");
-const Environment = require("../src/environment");
 const fs = require("fs");
 const path = require("path");
 
 const { expect } = require("chai");
+const Environment = require("../src/environment");
+const MkDirCommand = require("../src/commands/mkdir/index");
 
 const folder = __dirname;
 
-let env = new Environment(path.join(folder, "./files"), {});
-let cmd = new MkDirCommand(env);
+const env = new Environment(path.join(folder, "./files"), {});
+const cmd = new MkDirCommand(env);
 
 const unexistingDir = path.join(folder, "files/tempDir");
 
@@ -27,5 +27,4 @@ describe("MkDirCommand", () => {
     await cmd.run(["tempDir"]);
     expect(fs.existsSync(unexistingDir)).to.be.true;
   });
-
 });

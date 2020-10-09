@@ -1,20 +1,18 @@
-const Base64Command = require("../src/commands/base64/index");
-const Environment = require("../src/environment");
 const fs = require("fs");
 const path = require("path");
 
 const { expect } = require("chai");
+const Environment = require("../src/environment");
+const Base64Command = require("../src/commands/base64/index");
 
 const folder = __dirname;
 
-let env = new Environment(path.join(folder, "./files"), {});
-let cmd = new Base64Command(env);
+const env = new Environment(path.join(folder, "./files"), {});
+const cmd = new Base64Command(env);
 
 describe("Base64Command", () => {
-
   afterEach(() => {
-    if (fs.existsSync(path.join(folder, "./files/b64.txt")))
-      fs.unlinkSync(path.join(folder, "./files/b64.txt"));
+    if (fs.existsSync(path.join(folder, "./files/b64.txt"))) fs.unlinkSync(path.join(folder, "./files/b64.txt"));
   });
 
   it("base64 to function", async () => {
@@ -28,7 +26,7 @@ describe("Base64Command", () => {
     let content = null;
     await cmd.run(["cHJ1ZWJh", ">>", "content"]);
 
-    content = env.getVariables()["content"];
+    content = env.getVariables().content;
 
     expect(content).to.equals("prueba");
   });
