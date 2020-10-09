@@ -1,3 +1,5 @@
+/* eslint-disable global-require */
+
 module.exports = {
   base64: require("./base64/index"),
   beep: require("./beep/index"),

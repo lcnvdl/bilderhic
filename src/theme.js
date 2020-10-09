@@ -1,3 +1,6 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
+
 function getColors(safe) {
   const colors = require(safe ? "colors/safe" : "colors");
 

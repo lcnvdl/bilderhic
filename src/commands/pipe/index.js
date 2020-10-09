@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /** @typedef {import("../../environment")} Environment */
 
 const fs = require("fs");
@@ -20,8 +21,8 @@ class Pipe extends CommandBase {
     this.pipeId = pipeId || "1";
   }
 
-  async loadFromFile(path) {
-    await this.load(fs.readFileSync(this.parsePath(path), "utf8"));
+  async loadFromFile(_path) {
+    await this.load(fs.readFileSync(this.parsePath(_path), "utf8"));
   }
 
   /**

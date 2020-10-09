@@ -1,10 +1,6 @@
 const BaseEditor = require("./base-editor");
 
 class ObjectEditor extends BaseEditor {
-  constructor() {
-    super();
-  }
-
   get isObjectEditor() {
     return true;
   }

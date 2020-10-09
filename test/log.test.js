@@ -1,4 +1,3 @@
-const { expect } = require("chai");
 const Log = require("../src/log");
 
 describe("Log", () => {

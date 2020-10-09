@@ -49,7 +49,7 @@ class EnvCommand extends CommandBase {
 
       for (let i = 2; i < args.length; i++) {
         const arg = args[i];
-        if (arg == "-m" || arg == "--message") {
+        if (arg === "-m" || arg === "--message") {
           message = "";
         }
         else if (message !== null) {
@@ -96,7 +96,7 @@ class EnvCommand extends CommandBase {
         return this.codes.error;
       }
 
-      if (isNaN(existing)) {
+      if (Number.isNaN(existing)) {
         this.debug(`The environment variable ${key} is not a number`);
         return this.codes.error;
       }
@@ -106,7 +106,7 @@ class EnvCommand extends CommandBase {
       if (arg2 === undefined) {
         arg2 = 1;
       }
-      else if (arg2 === null || isNaN(arg2)) {
+      else if (arg2 === null || Number.isNaN(arg2)) {
         this.debug("The parameter is not a valid number");
         return this.codes.invalidArguments;
       }

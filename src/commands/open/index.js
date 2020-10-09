@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 const fs = require("fs");
 const CommandBase = require("../base/command-base");
 const FileEditorsFactory = require("../../file-editors/file-editors.factory");
@@ -76,7 +77,7 @@ class OpenCommand extends CommandBase {
             else if (resultIndex === "last") {
               resultIndex = -1;
             }
-            else if (!isNaN(resultIndex)) {
+            else if (!Number.isNaN(resultIndex)) {
               resultIndex = +resultIndex;
             }
             else {

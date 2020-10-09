@@ -1,3 +1,6 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
+
 const DirectoryHelper = require("./helpers/directory-helper");
 
 async function loadCommands() {

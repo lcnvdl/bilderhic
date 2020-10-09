@@ -69,10 +69,10 @@ class Environment {
       if (!_path) {
         return this.cwd;
       }
-
-      _path = this.applyVariables(_path);
-      _path = path.resolve(this.cwd, _path);
-      return _path;
+      let newPath = _path;
+      newPath = this.applyVariables(_path);
+      newPath = path.resolve(this.cwd, _path);
+      return newPath;
     }
     catch (err) {
       throw new Error(`Error parsing "${_path}". ${`${err}`}.`);

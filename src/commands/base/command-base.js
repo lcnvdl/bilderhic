@@ -29,9 +29,10 @@ class CommandBase {
 
   parsePath(_path) {
     try {
-      _path = this.environment.applyVariables(_path);
-      _path = path.resolve(this.environment.cwd, _path);
-      return _path;
+      let newPath = _path;
+      newPath = this.environment.applyVariables(newPath);
+      newPath = path.resolve(this.environment.cwd, newPath);
+      return newPath;
     }
     catch (err) {
       const msg = `${err.error || err.message || err}`;

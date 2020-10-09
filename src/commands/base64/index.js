@@ -25,7 +25,7 @@ class Base64Command extends CommandBase {
     await this.breakpoint();
 
     content = this.environment.applyVariables(content);
-    const buff = new Buffer(content, "base64");
+    const buff = Buffer.from(content, "base64");
     content = buff.toString("utf8");
 
     if (outTo) {

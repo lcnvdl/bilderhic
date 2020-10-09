@@ -3,8 +3,8 @@
 const args = process.argv.slice(2);
 
 if (!args.length) {
-    console.log("bhic <file> [--debug or -d] [--verbose or -vb]")
-    process.exit();
+  console.log("bhic <file> [--debug or -d] [--verbose or -vb]");
+  process.exit();
 }
 
 const Environment = require("./src/environment");
@@ -15,48 +15,48 @@ let file;
 let cwd;
 let command = null;
 
-let settings = {
-    verbose: false,
-    debug: false
+const settings = {
+  verbose: false,
+  debug: false,
 };
 
 for (let i = 0; i < args.length; i++) {
-    let a = args[i];
-    if (a[0] === "-") {
-        a = a.toLowerCase();
-        if (a === "--debug" || a === "-d") {
-            settings.debug = true;
-            Log.debug("Debug mode on");
-        }
-        else if (a === "--verbose" || a === "-vb") {
-            settings.verbose = true;
-            Log.verbose("Verbose mode on");
-        }
-        else if (a === "--command" || a === "-c") {
-            command = "";
-            for (let j = i + 1; j < args.length; j++) {
-                command += " " + args[j];
-            }
+  let a = args[i];
+  if (a[0] === "-") {
+    a = a.toLowerCase();
+    if (a === "--debug" || a === "-d") {
+      settings.debug = true;
+      Log.debug("Debug mode on");
+    }
+    else if (a === "--verbose" || a === "-vb") {
+      settings.verbose = true;
+      Log.verbose("Verbose mode on");
+    }
+    else if (a === "--command" || a === "-c") {
+      command = "";
+      for (let j = i + 1; j < args.length; j++) {
+        command += ` ${args[j]}`;
+      }
 
-            command = command.trim();
+      command = command.trim();
 
-            if (settings.verbose || settings.debug) {
-                Log.debug("Command: " + command);
-            }
+      if (settings.verbose || settings.debug) {
+        Log.debug(`Command: ${command}`);
+      }
 
-            break;
-        }
+      break;
     }
-    else if (!file) {
-        file = a;
-    }
-    else if (!cwd) {
-        cwd = a;
-    }
-    else {
-        Log.error("Wrong number of parameters.");
-        return;
-    }
+  }
+  else if (!file) {
+    file = a;
+  }
+  else if (!cwd) {
+    cwd = a;
+  }
+  else {
+    Log.error("Wrong number of parameters.");
+    break;
+  }
 }
 
 cwd = cwd || process.cwd();
@@ -69,14 +69,14 @@ const pipe = new Pipe(env);
 let thread;
 
 if (command) {
-    thread = pipe.load(command);
+  thread = pipe.load(command);
 }
 else {
-    thread = pipe.loadFromFile(file);
+  thread = pipe.loadFromFile(file);
 }
 
 thread.then(() => {
-    Log.success("Program finished");
+  Log.success("Program finished");
 }, err => {
-    Log.error(err);
+  Log.error(err);
 });

@@ -5,6 +5,9 @@
     "node": true,
     "mocha": true
   },
+  "plugins": [
+    "chai-friendly"
+  ],
   "extends": [
     "airbnb-base"
   ],
@@ -12,6 +15,8 @@
     "ecmaVersion": 12
   },
   "rules": {
+    "no-unused-expressions": 0,
+    "chai-friendly/no-unused-expressions": 2,
     "max-len": [
       "error",
       {
