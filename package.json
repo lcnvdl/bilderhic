@@ -28,7 +28,11 @@
     "example7:debug": "node index.js cd_test.txt ./test/files/ -d",
     "test": "mocha",
     "test:coverage": "nyc --reporter=text mocha",
-    "publish:lib": "node index.js publish.txt"
+    "publish:lib": "node index.js publish.txt",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:upd": "node index.js -c lint-rules update js",
+    "lint:cp": "node index.js -c lint-rules copy js"
   },
   "repository": {
     "type": "git",

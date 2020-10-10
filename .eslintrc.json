@@ -46,11 +46,18 @@
       "error",
       "stroustrup"
     ],
+    "no-return-await": "off",
     "no-unused-vars": [
       "warn",
       {
         "argsIgnorePattern": "^_",
         "caughtErrorsIgnorePattern": "^(ignore|_)"
+      }
+    ],
+    "no-use-before-define": [
+      "error",
+      {
+        "functions": false
       }
     ]
   }

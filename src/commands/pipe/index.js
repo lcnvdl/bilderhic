@@ -26,9 +26,9 @@ class Pipe extends CommandBase {
   }
 
   /**
-     * @param {string} str Content
+     * @param {string} content Content
      */
-  async load(str) {
+  async load(content) {
     this.info(`Running pipe "${this.pipeId}"`);
 
     if (!commands) {
@@ -37,8 +37,10 @@ class Pipe extends CommandBase {
 
     await this.breakpoint();
 
-    str = str || "";
+    let str = content || "";
     str = str.split(":eol:").join("\n");
+    str = str.split(":gt:").join(">");
+    str = str.split(":lt:").join("<");
 
     const instructions = str.split("\n")
       .map(m => m.trim())
