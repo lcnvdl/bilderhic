@@ -89,7 +89,7 @@ class SyncCommand extends CommandBase {
           }
         }
 
-        if (!quiet && (isFile(src) || isFile(dest))) {
+        if (!quiet && (isFile(src) || (fs.existsSync(dest) && isFile(dest)))) {
           self.info(`Copy\t${src}`);
           self.info(`  =>\t${dest}`);
           copied++;
