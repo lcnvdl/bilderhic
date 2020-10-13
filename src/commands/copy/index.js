@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const fse = require("fs-extra");
 const CommandBase = require("../base/command-base");
 
@@ -15,6 +16,8 @@ class CopyCommand extends CommandBase {
     const file2 = this.parsePath(args[1]);
     const ignores = [];
 
+    let quiet = false;
+
     this.debug(`Copy "${file1}" to "${file2}"`);
     await this.breakpoint();
 
@@ -23,10 +26,15 @@ class CopyCommand extends CommandBase {
       if (arg === "-i" || arg === "--ignore") {
         ignores.push(args[++i]);
       }
+      else if (arg === "-q" || arg === "--quiet") {
+        quiet = true;
+      }
       else {
         return this.codes.invalidArguments;
       }
     }
+
+    const self = this;
 
     fse.copySync(file1, file2, {
       filter: (src, dest) => {
@@ -36,6 +44,11 @@ class CopyCommand extends CommandBase {
               return false;
             }
           }
+        }
+
+        if (!quiet) {
+          self.info(src);
+          self.info(` => ${dest}`);
         }
 
         return true;

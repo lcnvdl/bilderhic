@@ -12,6 +12,7 @@ module.exports = {
   ren: require("./ren/index"),
   run: require("./run/index"),
   sleep: require("./sleep/index"),
+  sync: require("./sync/index"),
   exit: require("./exit/index"),
   extension: require("./extension/index"),
 };

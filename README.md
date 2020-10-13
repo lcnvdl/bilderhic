@@ -92,8 +92,19 @@ Copies a file or a folder. Override the files if it exists.
 
 ##### Usage
 ```bash
-copy <from> <to> [--ignore <file or folder>]
+copy <from> <to> [-i or --ignore <file or folder>] [-q or --quiet]
 ```
+
+#### > sync command
+
+##### Description
+Synchronizes (mirror mode) two folders. Only writes the diferrences between the folders.
+
+##### Usage
+```bash
+sync <source> <destination> [-i or --ignore <file or folder>] [-q or --quiet]
+```
+
 #### > del command
 
 ##### Description
