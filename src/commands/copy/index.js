@@ -12,16 +12,13 @@ class CopyCommand extends CommandBase {
       return this.codes.invalidArguments;
     }
 
-    const file1 = this.parsePath(args[0]);
-    const file2 = this.parsePath(args[1]);
+    let file1 = null;
+    let file2 = null;
     const ignores = [];
 
     let quiet = false;
 
-    this.debug(`Copy "${file1}" to "${file2}"`);
-    await this.breakpoint();
-
-    for (let i = 2; i < args.length; i++) {
+    for (let i = 0; i < args.length; i++) {
       const arg = args[i];
       if (arg === "-i" || arg === "--ignore") {
         ignores.push(args[++i]);
@@ -29,10 +26,23 @@ class CopyCommand extends CommandBase {
       else if (arg === "-q" || arg === "--quiet") {
         quiet = true;
       }
+      else if (!file1) {
+        file1 = this.parsePath(arg);
+      }
+      else if (!file2) {
+        file2 = this.parsePath(arg);
+      }
       else {
         return this.codes.invalidArguments;
       }
     }
+
+    if (!file1 || !file2) {
+      return this.codes.invalidArguments;
+    }
+
+    this.debug(`Copy "${file1}" to "${file2}"`);
+    await this.breakpoint();
 
     const self = this;
 
