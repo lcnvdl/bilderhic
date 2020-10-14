@@ -2,32 +2,43 @@ const fs = require("fs");
 const path = require("path");
 const CommandBase = require("../base/command-base");
 
-const deleteFolderRecursive = function (folder, self) {
+const deleteFolderRecursive = function (folder, self, fileManager) {
+  fileManager = fileManager || fs;
+
   if (fs.existsSync(folder)) {
     fs.readdirSync(folder).forEach(file => {
       const curPath = path.join(folder, file);
       if (fs.lstatSync(curPath).isDirectory()) {
-        deleteFolderRecursive(curPath, self);
+        deleteFolderRecursive(curPath, self, fileManager);
       }
       else {
-        fs.unlinkSync(curPath);
+        fileManager.unlinkSync(curPath);
         self.info(`File ${curPath} deleted`);
       }
     });
 
-    fs.rmdirSync(folder);
+    fileManager.rmdirSync(folder);
     self.info(`Folder ${folder} deleted`);
   }
 };
 
 class DelCommand extends CommandBase {
-  constructor(env) {
+  constructor(env, fileManager) {
     super(env);
     this.quiet = false;
+    this.fileManager = fileManager || fs;
   }
 
   run(args) {
+    if (!args) {
+      return this.codes.missingArguments;
+    }
+
     if (Array.isArray(args)) {
+      if (args.length === 0) {
+        return this.codes.missingArguments;
+      }
+
       if (args.some(m => m === "--quiet" || m === "-q")) {
         this.quiet = true;
         args = args.filter(m => m[0] !== "-");
@@ -54,10 +65,10 @@ class DelCommand extends CommandBase {
     }
 
     if (fs.lstatSync(fileOrFolder).isDirectory()) {
-      deleteFolderRecursive(fileOrFolder, this);
+      deleteFolderRecursive(fileOrFolder, this, this.fileManager);
     }
     else {
-      fs.unlinkSync(fileOrFolder);
+      this.fileManager.unlinkSync(fileOrFolder);
       this.info(`File ${fileOrFolder} deleted`);
     }
 
