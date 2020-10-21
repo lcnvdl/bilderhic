@@ -8,6 +8,7 @@ const CommandBase = require("../base/command-base");
 const { loadCommands } = require("../load-commands");
 const OpenCommand = require("../open/index");
 const CommandsExtractor = require("../helpers/commands-extractor");
+const { exit } = require("process");
 
 let commands = null;
 
@@ -19,6 +20,8 @@ class Pipe extends CommandBase {
   constructor(env, pipeId) {
     super(env);
     this.pipeId = pipeId || "1";
+    /** @type {Promise<number>[]} */
+    this.threads = [];
   }
 
   async loadFromFile(_path) {
@@ -60,18 +63,10 @@ class Pipe extends CommandBase {
         }
         else {
           const code = await this._processCommand(current);
+          const exitPipe = this._processCodes(current, code);
 
-          if (code === this.codes.invalidArguments) {
-            throw new Error(`Invalid arguments in instruction "${current}".`);
-          }
-          else if (code === this.codes.missingArguments) {
-            throw new Error(`Missing arguments in instruction "${current}".`);
-          }
-          else if (code === this.codes.exitPipe) {
+          if (exitPipe) {
             break;
-          }
-          else if (code === this.codes.exitProcess) {
-            process.exit(0);
           }
         }
       }
@@ -87,16 +82,46 @@ class Pipe extends CommandBase {
     return this.codes.success;
   }
 
-  async _processCommand(current) {
-    const cmds = CommandsExtractor.extract(current);
+  /**
+   * @param {string} current Current CMD
+   * @param {number} code Exit code
+   * @returns {boolean} True if must exit pipe, false if not.
+   */
+  _processCodes(current, code) {
+    if (code === this.codes.invalidArguments) {
+      throw new Error(`Invalid arguments in instruction "${current}".`);
+    }
+    else if (code === this.codes.missingArguments) {
+      throw new Error(`Missing arguments in instruction "${current}".`);
+    }
+    else if (code === this.codes.exitPipe) {
+      return true;
+    }
+    else if (code === this.codes.exitProcess) {
+      process.exit(0);
+    }
 
-    const cmd = cmds.shift();
+    return false;
+  }
+
+  async _processCommand(currentCmd) {
+    let current = (currentCmd || "").trim();
+    let isAsync = false;
+
+    if (current && current[0] === "~") {
+      current = current.substr(1);
+      isAsync = true;
+    }
+
+    const argumnts = CommandsExtractor.extract(current);
+
+    const cmd = argumnts.shift();
 
     /** @type {CommandBase} */
     let CommandClass = commands[cmd];
 
     if (!CommandClass) {
-      cmds.unshift(cmd);
+      argumnts.unshift(cmd);
       CommandClass = commands.run;
     }
 
@@ -108,7 +133,16 @@ class Pipe extends CommandBase {
 
     await this.breakpoint(`> ${current}`);
 
-    const result = command.run(cmds);
+    if (isAsync) {
+      this.threads.push(this._runProcess(command, argumnts));
+      return this.codes.newThread;
+    }
+
+    return await this._runProcess(command, argumnts);
+  }
+
+  async _runProcess(command, argumnts) {
+    const result = command.run(argumnts);
 
     if (result === this.codes.invalidArguments) {
       this.debugError(" - Invalid arguments");
@@ -139,6 +173,18 @@ class Pipe extends CommandBase {
         await this._pipeCmdEachFile(instructions);
         return true;
       }
+    }
+    else if (cmd[0] === ":pipeline") {
+      this.info(current);
+      await this.breakpoint();
+
+      const inlineInstructions = `(${this.environment.applyVariables(current.substr(current.indexOf(" ") + 1).trim())})`;
+
+      this.debug("Running inline pipe");
+      await this.breakpoint();
+      const fork = this.environment.fork();
+      const pipe = new Pipe(fork, `${this.pipeId}.il`);
+      await pipe.load(inlineInstructions);
     }
     else if (cmd[0] === ":break") {
       await this.breakpoint("Manual breakpoint");
@@ -210,6 +256,28 @@ class Pipe extends CommandBase {
 
       this.info("Open command success");
       await this.breakpoint();
+    }
+    else if (cmd[0] === ":await") {
+      await this.breakpoint("Await");
+
+      if (this.threads.length > 0) {
+        const exitCodes = await Promise.all(this.threads);
+        let exitPipe = false;
+
+        exitCodes.forEach(code => {
+          const localExitPipe = this._processCodes("$thread$", code);
+          if (localExitPipe) {
+            exitPipe = true;
+          }
+        });
+
+        this.threads = [];
+
+        await this.breakpoint("Exit pipe");
+        if (exitPipe) {
+          return true;
+        }
+      }
     }
 
     return false;

@@ -1,3 +1,4 @@
+// eslint-disable-next-line camelcase
 const child_process = require("child_process");
 const CommandBase = require("../base/command-base");
 const Log = require("../../log");
@@ -6,7 +7,21 @@ class RunCommand extends CommandBase {
   run(args) {
     return new Promise((resolve, reject) => {
       try {
-        let command = args.join(" ");
+        let skipArgs = 0;
+        let silent = false;
+
+        while (args && args.length > 0 && args[skipArgs] && args[skipArgs].startsWith("-")) {
+          if (args[skipArgs] === "-q" || args[skipArgs] === "--quiet") {
+            silent = true;
+          }
+          else {
+            return this.codes.invalidArguments;
+          }
+
+          skipArgs++;
+        }
+
+        let command = args.slice(skipArgs).join(" ");
 
         command = this.environment.applyVariables(command);
 
@@ -14,14 +29,16 @@ class RunCommand extends CommandBase {
 
         child.stdout.setEncoding("utf8");
         child.stdout.on("data", data => {
-          data = data.toString();
-          Log.write(data);
+          const str = data.toString();
+          if (!silent) {
+            Log.write(str);
+          }
         });
 
         child.stderr.setEncoding("utf8");
         child.stderr.on("data", data => {
-          data = data.toString();
-          Log.error(data);
+          const str = data.toString();
+          Log.error(str);
         });
 
         child.on("close", code => {

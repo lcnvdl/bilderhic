@@ -217,21 +217,42 @@ beep 3 1000
 ```
 
 ### ~ Special Commands ~
+#### Pipe
+Open a new pipe from a file
 ```bash
 :pipe <file>
 ```
+
+#### Pipe line
+Open a new pipe from a line of code
+```bash
+:pipeline <code>
+```
+
+#### Each
+Open a new pipe from a list of folders or files
+
 ```bash
 :each folder
 ```
 ```bash
 :each file
 ```
+
+#### Open
+Open a file editor
 ```bash
 :open <file>
 ```
+
+#### Eval
+Run javacript code
 ```bash
 :eval <code>
 ```
+
+#### If
+If condition
 ```bash
 :if <conditions>
 ```
@@ -240,6 +261,22 @@ beep 3 1000
 :begin
     <instructions here>
 :end
+```
+
+#### Await
+Wait for all async commands to finish.
+
+```bash
+:await
+```
+
+If you want to start an async command, you need to start it with a ~ character.
+
+Example:
+```bash
+run echo This is a sync command
+~run echo This is an async command
+:await
 ```
 
 ## File edition
@@ -286,7 +323,6 @@ Object editors: XML, HTML, JSON
 ## Examples
 bhic pipe.txt
 bhic -c echo Hi world!
-
 
 ## Misc
 Multiple line command

@@ -18,11 +18,17 @@ class CommandBase {
       invalidArguments: -1,
       success: 0,
       error: 1,
+      newThread: 2,
       exitPipe: 10,
       exitProcess: 11,
     };
   }
 
+  /**
+   * @abstract
+   * @param {*} _args Args
+   * @returns {number} Status code
+   */
   run(_args) {
     throw new Error("Not implemented");
   }

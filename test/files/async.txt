@@ -1,0 +1,13 @@
+echo Starting...
+
+echo Thread 1
+  ~run cmd /c "ping -n 4 localhost > silent1" && del /f /q silent1 && echo #Thread 1 finished
+echo Thread 2
+  ~run cmd /c "ping -n 1 localhost > silent2" && del /f /q silent2 && echo #Thread 2 finished
+echo Thread 3
+  ~run cmd /c "ping -n 2 localhost > silent3" && del /f /q silent3 && echo #Thread 3 finished
+
+echo Dir /s probably stills running...
+echo Waiting...
+:await
+echo All threads done

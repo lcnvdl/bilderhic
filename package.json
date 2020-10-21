@@ -1,6 +1,6 @@
 {
   "name": "bilderhic",
-  "version": " 1.0.62",
+  "version": " 1.0.63",
   "description": "Bilderhic (bhic) is a smart and simple command tool for automatization.",
   "preferGlobal": true,
   "main": "index.js",
@@ -26,6 +26,10 @@
     "example6:debug": "node index.js prompt.txt ./test/files/ -d",
     "example7": "node index.js cd_test.txt ./test/files/",
     "example7:debug": "node index.js cd_test.txt ./test/files/ -d",
+    "example8": "node index.js inline-pipe.txt ./test/files/",
+    "example8:debug": "node index.js inline-pipe.txt ./test/files/ -d",
+    "example9": "node index.js async.txt ./test/files/",
+    "example9:debug": "node index.js async.txt ./test/files/ -d",
     "test": "mocha",
     "test:coverage": "nyc --reporter=text mocha",
     "publish:lib": "node index.js publish.txt",
