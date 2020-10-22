@@ -1,37 +1,331 @@
-## Welcome to GitHub Pages
+<img src="https://lucianorasente.com/public_img/bhic.png" style="max-width:100px;width:100%;">
 
-You can use the [editor on GitHub](https://github.com/lcnvdl/bilderhic/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+# bilderhic
+Bilderhic is a smart and simple command tool for automatization.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## How does it work?
+You have to create a pipe file.
+Bilderhic will run the commands inside your file.
+The commands of the pipe file can be Bilderhic commands, 
+or bash / cmd commands.
+Bilderhic includes usefull commands for edit files.
 
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+## Installation
+```bash
+npm i -g bilderhic
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+## Usage
+```bash
+bhic <file> [-vb or --verbose] [-d or --debug]
 
-### Jekyll Themes
+or
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/lcnvdl/bilderhic/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+bhic [-vb or --verbose] [-d or --debug] [-c or --command] <single line command>
+```
 
-### Support or Contact
+### ~ Bilderhic Commands ~
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+#### > env command
+
+##### Description
+It allows you to create / load / edit environment variables (inside your process).
+
+##### Usage
+> Set variable manually
+```bash
+env set <key> <value>
+```
+
+> Set variable from user input
+```bash
+env prompt <key> -m <message>
+```
+
+> Adds a value to a numeric variable
+```bash
+env add <key> <value>
+```
+
+> Load variables
+```bash
+env load <file.yml>
+```
+
+> File.yml example
+```yaml
+app:
+    id: com.brand.app
+    version: 2
+    description: This is an awesome Android Application.
+    name: Awesomapp
+```
+
+> Usage of environment variables
+```bash
+env load File.yml
+
+:open config.xml
+    - set widget.id=[app.id]
+    - set widget.android-versionCode=[app.version]
+    - set widget.version=0.0.[app.version]
+    - set widget>name=[app.name]
+    - set widget>description=[app.description]
+    - save
+    - close
+```
+
+> Clear your environment
+```bash
+env clear
+```
+
+> Change the debug mode
+```bash
+env debug <enable or disable>
+```
+
+#### > copy command
+
+##### Description
+Copies a file or a folder. Override the files if it exists.
+
+##### Usage
+```bash
+copy <from> <to> [-i or --ignore <file or folder>] [-q or --quiet]
+```
+
+#### > sync command
+
+##### Description
+Synchronizes (mirror mode) two folders. Only writes the diferrences between the folders.
+
+##### Usage
+```bash
+sync <source> <destination> [-i or --ignore <file or folder>] [-q or --quiet]
+```
+
+#### > del command
+
+##### Description
+Deletes a file o a folder (recursively) if exists.
+
+##### Usage
+```bash
+del <file or folder>
+```
+
+#### > cd command
+DOC
+
+#### > mkdir command
+DOC
+
+#### > ren command
+Renames a file o a folder.
+
+##### Usage
+```bash
+ren <file or folder> <newName> [--skip-unexisting or -sk] [--overwrite or -o]
+```
+
+
+#### > base64 command
+
+##### Description
+Parses a base-64 string.
+
+##### Usage
+```bash
+base64 <text>
+or
+base64 <text> > <filename>
+or
+base64 <text> >> <environment variable>
+```
+
+##### Example
+```bash
+base64 YmlsZGVyaGlj > mistery.txt
+```
+
+#### > cat command
+
+##### Description
+Reads a file and prints its content.
+
+##### Usage
+```bash
+cat <filename>
+or
+cat <filename> > <filename>
+or
+cat <filename> >> <environment variable>
+```
+
+##### Example
+```bash
+base64 YmlsZGVyaGlj > mistery.txt
+```
+
+#### > run command
+
+##### Description
+Renames a file or a folder.
+
+##### Usage
+```bash
+ren <origin> <target> [--overwrite or -w]
+```
+
+#### > exit command
+
+##### Description
+Stops the pipe or the process.
+
+##### Usage
+```bash
+exit [pipe]
+```
+#### > sleep command
+
+##### Description
+Waits until timer ends.
+
+##### Usage
+```bash
+sleep <time (ms)>
+```
+
+#### > beep command
+
+##### Description
+Makes a console beep sound.
+
+##### Usage
+```bash
+beep [times] [delay between beeps]
+```
+##### Examples
+```bash
+echo Beep!
+beep
+echo Beep! Beep!
+beep 2
+echo Beep! ... Beep! ... Beep!
+beep 3 1000
+```
+
+### ~ Special Commands ~
+#### Pipe
+Open a new pipe from a file
+```bash
+:pipe <file>
+```
+
+#### Pipe line
+Open a new pipe from a line of code
+```bash
+:pipeline <code>
+```
+
+#### Each
+Open a new pipe from a list of folders or files
+
+```bash
+:each folder
+```
+```bash
+:each file
+```
+
+#### Open
+Open a file editor
+```bash
+:open <file>
+```
+
+#### Eval
+Run javacript code
+```bash
+:eval <code>
+```
+
+#### If
+If condition
+```bash
+:if <conditions>
+```
+```bash
+:if <conditions>
+:begin
+    <instructions here>
+:end
+```
+
+#### Await
+Wait for all async commands to finish.
+
+```bash
+:await
+```
+
+If you want to start an async command, you need to start it with a ~ character.
+
+Example:
+```bash
+run echo This is a sync command
+~run echo This is an async command
+:await
+```
+
+## File edition
+Text editors: TXT
+Object editors: XML, HTML, JSON
+
+### ~ Text editors ~
+```bash
+- append <text>
+```
+```bash
+- set <line number> <text>
+```
+```bash
+- replace <text> <replacement text>
+```
+```bash
+- replaceone <text> <replacement text>
+```
+```bash
+- save
+```
+```bash
+- close
+```
+
+### ~ Object editors ~ 
+```bash
+- add <key>=<value>
+```
+```bash
+- set <selector> = <value or variable>
+```
+```bash
+- get <selector> > <variableName>
+```
+```bash
+- save
+```
+```bash
+- close
+```
+
+## Examples
+bhic pipe.txt
+bhic -c echo Hi world!
+
+## Misc
+Multiple line command
+```bash
+bhic -c echo Running :eol: sleep 5000 :eol: beep :eol: echo Run finished
+```
