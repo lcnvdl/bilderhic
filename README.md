@@ -323,7 +323,7 @@ Object editors: XML, HTML, JSON
 ## Examples
 bhic pipe.txt
 bhic -c echo Hi world!
-bhic pipe.txt --set myVariable myCustomValue
+bhic pipe.txt --set myVariable=myCustomValue
 
 ## Misc
 Multiple line command

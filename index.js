@@ -27,8 +27,9 @@ for (let i = 0; i < args.length; i++) {
   if (a[0] === "-") {
     a = a.toLowerCase();
     if (a === "--set") {
-      const variableName = args[i].substr(0, args[i].indexOf("=")).trim();
-      const variableValue = args[i].substr(args[i].indexOf("=") + 1).trim();
+      const variable = args[++i];
+      const variableName = variable.substr(0, variable.indexOf("=")).trim();
+      const variableValue = variable.substr(variable.indexOf("=") + 1).trim();
 
       initialVariables[variableName] = variableValue;
     }
