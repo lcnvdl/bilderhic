@@ -8,7 +8,6 @@ const CommandBase = require("../base/command-base");
 const { loadCommands } = require("../load-commands");
 const OpenCommand = require("../open/index");
 const CommandsExtractor = require("../helpers/commands-extractor");
-const { exit } = require("process");
 
 let commands = null;
 

@@ -3,7 +3,7 @@
 const args = process.argv.slice(2);
 
 if (!args.length) {
-  console.log("bhic <file> [--debug or -d] [--verbose or -vb]");
+  console.log("bhic <file> [--debug or -d] [--verbose or -vb] [--set variableName variableValue]*");
   process.exit();
 }
 
@@ -20,11 +20,19 @@ const settings = {
   debug: false,
 };
 
+const initialVariables = {};
+
 for (let i = 0; i < args.length; i++) {
   let a = args[i];
   if (a[0] === "-") {
     a = a.toLowerCase();
-    if (a === "--debug" || a === "-d") {
+    if (a === "--set") {
+      const variableName = args[i].substr(0, args[i].indexOf("=")).trim();
+      const variableValue = args[i].substr(args[i].indexOf("=") + 1).trim();
+
+      initialVariables[variableName] = variableValue;
+    }
+    else if (a === "--debug" || a === "-d") {
       settings.debug = true;
       Log.debug("Debug mode on");
     }
@@ -62,8 +70,8 @@ for (let i = 0; i < args.length; i++) {
 cwd = cwd || process.cwd();
 
 const env = new Environment(cwd, settings);
-
 env.setFromProcess(process);
+env.setVariables(initialVariables, false);
 
 const pipe = new Pipe(env);
 let thread;

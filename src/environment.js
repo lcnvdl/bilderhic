@@ -83,6 +83,10 @@ class Environment {
     this.variables[key] = value;
   }
 
+  /**
+   * @param {*} newVariables New variables dictionary
+   * @param {boolean} [clear] Clear all existing variables?
+   */
   setVariables(newVariables, clear) {
     if (clear) {
       this.variables = newVariables;
