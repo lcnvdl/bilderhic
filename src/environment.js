@@ -101,7 +101,9 @@ class Environment {
 
     Object.keys(this.variables).forEach(k => {
       if (typeof this.variables[k] === "object") {
-        extractVariables(this.variables[k], k).forEach(kv => variables[kv.key] = kv.value);
+        extractVariables(this.variables[k], k).forEach(kv => {
+          variables[kv.key] = kv.value;
+        });
       }
       else {
         variables[k] = this.variables[k];
@@ -122,20 +124,20 @@ class Environment {
     while (finalStr.indexOf("[$p") !== -1) {
       const i = finalStr.indexOf("[$p");
       const f1 = finalStr.indexOf("]", i + 1) + 1;
-      const str = finalStr.substring(i, f1);
+      const str2 = finalStr.substring(i, f1);
 
       //  TODO    Hacer recorrido hacia arriba
       console.warn("Experimental function.");
 
       const pVars = this.parent.getVariables();
-      let key = str.substr(str.lastIndexOf(".") + 1);
+      let key = str2.substr(str2.lastIndexOf(".") + 1);
       key = key.substr(0, key.lastIndexOf("]"));
 
       if (typeof pVars[key] !== "undefined") {
-        finalStr = finalStr.replace(str, `${pVars[key]}`);
+        finalStr = finalStr.replace(str2, `${pVars[key]}`);
       }
       else {
-        finalStr = finalStr.replace(str, "undefined");
+        finalStr = finalStr.replace(str2, "undefined");
       }
     }
 

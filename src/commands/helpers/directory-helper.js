@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+
 const fs = require("fs");
 const os = require("os");
 const path = require("path");

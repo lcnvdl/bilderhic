@@ -8,6 +8,7 @@ const CommandBase = require("../base/command-base");
 const { loadCommands } = require("../load-commands");
 const OpenCommand = require("../open/index");
 const CommandsExtractor = require("../helpers/commands-extractor");
+const EvalContextGenerator = require("./eval/context-generator");
 
 let commands = null;
 
@@ -163,6 +164,10 @@ class Pipe extends CommandBase {
   async _processPipeCommand(current, instructions) {
     const cmd = CommandsExtractor.extract(current);
 
+    if (cmd[0] === ":bhic" || cmd[0] === ":bilderhic") {
+      return true;
+    }
+
     if (cmd[0] === ":each") {
       if (cmd[1] === "folder") {
         await this._pipeCmdEachFolder(instructions);
@@ -200,7 +205,9 @@ class Pipe extends CommandBase {
 
       const condition = `(${this.environment.applyVariables(current.substr(current.indexOf(" ") + 1).trim())})`;
 
-      const result = safeEval(condition);
+      const extraContext = EvalContextGenerator.newContext();
+
+      const result = safeEval(condition, extraContext);
 
       this.environment.setVariable("$eval", result);
     }
@@ -328,12 +335,12 @@ class Pipe extends CommandBase {
   }
 }
 
-function getDirectories(path) {
-  return fs.readdirSync(path).filter(file => fs.statSync(`${path}/${file}`).isDirectory());
+function getDirectories(directory) {
+  return fs.readdirSync(directory).filter(file => fs.statSync(`${directory}/${file}`).isDirectory());
 }
 
-function getFiles(path) {
-  return fs.readdirSync(path).filter(file => fs.statSync(`${path}/${file}`).isFile());
+function getFiles(directory) {
+  return fs.readdirSync(directory).filter(file => fs.statSync(`${directory}/${file}`).isFile());
 }
 
 module.exports = Pipe;

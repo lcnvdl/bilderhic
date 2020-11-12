@@ -246,9 +246,16 @@ Open a file editor
 ```
 
 #### Eval
-Run javacript code
+Run javacript code and saves the result to $eval (environment variable).
+
 ```bash
 :eval <code>
+```
+
+Example:
+```bash
+:eval +(new Date())
+echo [$eval]
 ```
 
 #### If
@@ -277,6 +284,15 @@ Example:
 run echo This is a sync command
 ~run echo This is an async command
 :await
+```
+
+#### Bhic / Bilderhic
+It does nothing. It's useful for ensure that you are running a file on Bilderhic.
+
+```bash
+:bhic
+or
+:bilderhic
 ```
 
 ## File edition
