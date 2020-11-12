@@ -10,6 +10,7 @@ const env = require("./env/index");
 const exit = require("./exit/index");
 const extension = require("./extension/index");
 const mkdir = require("./mkdir/index");
+const log = require("./log/index");
 const pipe = require("./pipe/index");
 const ren = require("./ren/index");
 const run = require("./run/index");
@@ -27,6 +28,7 @@ module.exports = {
   env,
   exit,
   extension,
+  log,
   mkdir,
   pipe,
   ren,

@@ -118,6 +118,13 @@ del <file or folder>
 #### > cd command
 DOC
 
+#### > log command
+Writes a text to the configured loggers.
+
+```bash
+log [info | warn | debug | error | success] <text to log>
+```
+
 #### > mkdir command
 DOC
 
@@ -290,9 +297,9 @@ run echo This is a sync command
 It does nothing. It's useful for ensure that you are running a file on Bilderhic.
 
 ```bash
-:bhic
+!bhic
 or
-:bilderhic
+!bilderhic
 ```
 
 ## File edition

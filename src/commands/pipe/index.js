@@ -55,6 +55,10 @@ class Pipe extends CommandBase {
       while (instructions.length > 0) {
         const current = instructions.shift();
 
+        if (current && (["!bhic", "!bilderhic"].includes(current.trim().toLowerCase()))) {
+          return true;
+        }
+
         if (current[0] === ":") {
           const result = await this._processPipeCommand(current, instructions);
           if (result) {
@@ -163,10 +167,6 @@ class Pipe extends CommandBase {
 
   async _processPipeCommand(current, instructions) {
     const cmd = CommandsExtractor.extract(current);
-
-    if (cmd[0] === ":bhic" || cmd[0] === ":bilderhic") {
-      return true;
-    }
 
     if (cmd[0] === ":each") {
       if (cmd[1] === "folder") {
