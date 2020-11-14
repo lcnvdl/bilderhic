@@ -45,6 +45,44 @@ class CommandsExtractor {
 
     return final;
   }
+
+  /**
+   * @param {string[]} refInstructions Instructions
+   */
+  static extractBlock(refInstructions) {
+    const block = [];
+
+    if (normalize(refInstructions[0]) === ":begin") {
+      let counter = 1;
+      block.push(refInstructions.shift());
+
+      while (counter > 0 && refInstructions.length > 0) {
+        const instruction = refInstructions.shift();
+        const normalized = normalize(instruction);
+        if (normalized === ":begin") {
+          counter++;
+        }
+        else if (normalized === ":end") {
+          counter--;
+        }
+
+        block.push(instruction);
+      }
+    }
+
+    return block;
+  }
+}
+
+/**
+ * @param {string} instruction Instruction
+ */
+function normalize(instruction) {
+  if (instruction) {
+    return instruction.trim().toLowerCase();
+  }
+
+  return instruction;
 }
 
 module.exports = CommandsExtractor;

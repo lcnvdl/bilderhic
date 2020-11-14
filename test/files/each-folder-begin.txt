@@ -1,0 +1,7 @@
+cd ..
+:each folder
+:begin
+echo Current folder: [$currentFolder]
+:end
+
+log success Finished

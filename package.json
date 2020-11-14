@@ -30,6 +30,8 @@
     "example8:debug": "node index.js inline-pipe.txt ./test/files/ -d",
     "example9": "node index.js async.txt ./test/files/",
     "example9:debug": "node index.js async.txt ./test/files/ -d",
+    "example10": "node index.js each-folder-begin.txt ./test/files/",
+    "example10:debug": "node index.js each-folder-begin.txt ./test/files/ -d",
     "test": "mocha",
     "test:coverage": "nyc --reporter=text mocha",
     "publish:lib": "node index.js publish.txt",

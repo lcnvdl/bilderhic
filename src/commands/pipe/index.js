@@ -56,10 +56,9 @@ class Pipe extends CommandBase {
         const current = instructions.shift();
 
         if (current && (["!bhic", "!bilderhic"].includes(current.trim().toLowerCase()))) {
-          return true;
+          //  Ignore the line
         }
-
-        if (current[0] === ":") {
+        else if (current[0] === ":") {
           const result = await this._processPipeCommand(current, instructions);
           if (result) {
             break;
@@ -171,11 +170,11 @@ class Pipe extends CommandBase {
     if (cmd[0] === ":each") {
       if (cmd[1] === "folder") {
         await this._pipeCmdEachFolder(instructions);
-        return true;
+        return instructions.length === 0;
       }
       if (cmd[1] === "file") {
         await this._pipeCmdEachFile(instructions);
-        return true;
+        return instructions.length === 0;
       }
     }
     else if (cmd[0] === ":pipeline") {
@@ -200,41 +199,10 @@ class Pipe extends CommandBase {
       this.debug("End");
     }
     else if (cmd[0] === ":eval") {
-      this.info(current);
-      await this.breakpoint();
-
-      const condition = `(${this.environment.applyVariables(current.substr(current.indexOf(" ") + 1).trim())})`;
-
-      const extraContext = EvalContextGenerator.newContext();
-
-      const result = safeEval(condition, extraContext);
-
-      this.environment.setVariable("$eval", result);
+      await this._evalCmd(current);
     }
     else if (cmd[0] === ":if") {
-      this.info(current);
-
-      const condition = `(${this.environment.applyVariables(current.substr(current.indexOf(" ") + 1).trim())})`;
-
-      await this.breakpoint();
-
-      const result = safeEval(condition);
-
-      if (!result) {
-        let next = instructions.shift();
-        if (next === ":begin") {
-          do {
-            next = instructions.shift();
-          }
-          while (next !== ":end");
-        }
-      }
-
-      if (this.environment.isVerboseEnabled) {
-        this.verbose(`Inline if succed with ${result}`);
-      }
-
-      await this.breakpoint();
+      await this._ifCmd(current, instructions);
     }
     else if (cmd[0] === ":open") {
       const file = cmd[1].trim();
@@ -289,10 +257,58 @@ class Pipe extends CommandBase {
     return false;
   }
 
+  async _evalCmd(current) {
+    this.info(current);
+    await this.breakpoint();
+
+    const condition = `(${this.environment.applyVariables(current.substr(current.indexOf(" ") + 1).trim())})`;
+
+    const extraContext = EvalContextGenerator.newContext();
+
+    const result = safeEval(condition, extraContext);
+
+    this.environment.setVariable("$eval", result);
+  }
+
+  async _ifCmd(current, instructions) {
+    this.info(current);
+    const condition = `(${this.environment.applyVariables(current.substr(current.indexOf(" ") + 1).trim())})`;
+
+    await this.breakpoint();
+
+    const result = safeEval(condition);
+
+    if (!result) {
+      let next = instructions.shift();
+      if (next === ":begin") {
+        do {
+          next = instructions.shift();
+        }
+        while (next !== ":end");
+      }
+    }
+
+    if (this.environment.isVerboseEnabled) {
+      this.verbose(`Inline if succed with ${result}`);
+    }
+
+    await this.breakpoint();
+  }
+
   async _pipeCmdEachFolder(instructions) {
     const rootFolder = this.environment.cwd;
     const folders = getDirectories(rootFolder);
     let subPipeId = 1;
+
+    let instructionsBlock;
+
+    if (instructions[0] && instructions[0].trim().toLowerCase() === ":begin") {
+      instructionsBlock = CommandsExtractor.extractBlock(instructions);
+    }
+    else {
+      instructionsBlock = [...instructions];
+      instructions.splice(0, instructions.length);
+    }
 
     for (let i = 0; i < folders.length; i++) {
       this.debug(`Forking pipe to ${folders[i]}`);
@@ -309,7 +325,7 @@ class Pipe extends CommandBase {
         $folderIndex: i,
       });
       const pipe = new Pipe(fork, `${this.pipeId}.${subPipeId++}`);
-      await pipe.load(instructions.join("\n"));
+      await pipe.load(instructionsBlock.join("\n"));
     }
   }
 
@@ -332,6 +348,8 @@ class Pipe extends CommandBase {
       const pipe = new Pipe(fork, `${this.pipeId}.${subPipeId++}`);
       await pipe.load(instructions.join("\n"));
     }
+
+    instructions.splice(0, instructions.length);
   }
 }
 
