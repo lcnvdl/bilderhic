@@ -334,6 +334,16 @@ class Pipe extends CommandBase {
     const files = getFiles(folder);
     let subPipeId = 1;
 
+    let instructionsBlock;
+
+    if (instructions[0] && instructions[0].trim().toLowerCase() === ":begin") {
+      instructionsBlock = CommandsExtractor.extractBlock(instructions);
+    }
+    else {
+      instructionsBlock = [...instructions];
+      instructions.splice(0, instructions.length);
+    }
+
     for (let i = 0; i < files.length; i++) {
       this.debug(`Forking pipe for file ${files[i]}`);
       await this.breakpoint();
@@ -346,10 +356,8 @@ class Pipe extends CommandBase {
         $fileIndex: i,
       });
       const pipe = new Pipe(fork, `${this.pipeId}.${subPipeId++}`);
-      await pipe.load(instructions.join("\n"));
+      await pipe.load(instructionsBlock.join("\n"));
     }
-
-    instructions.splice(0, instructions.length);
   }
 }
 
