@@ -38,6 +38,7 @@
         "consistent": true
       }
     ],
+    "prefer-destructuring": "warn",
     "prefer-const": "warn",
     "no-plusplus": "off",
     "no-underscore-dangle": "off",
@@ -46,6 +47,7 @@
       "error",
       "stroustrup"
     ],
+    "no-restricted-syntax": "off",
     "no-return-await": "off",
     "no-unused-vars": [
       "warn",

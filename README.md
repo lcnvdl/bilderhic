@@ -246,6 +246,23 @@ Open a new pipe from a list of folders or files
 :each file
 ```
 
+#### Logger
+Adds a logger instance.
+```bash
+:logger add <logger type> [logger name]
+```
+
+Logger types:
+* File
+
+Example:
+```bash
+:logger add file
+- set file logs.txt
+
+log Hello word!
+```
+
 #### Open
 Open a file editor
 ```bash

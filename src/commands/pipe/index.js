@@ -206,7 +206,7 @@ class Pipe extends CommandBase {
       await this._ifCmd(current, instructions);
     }
     else if (cmd[0] === ":logger") {
-      if (cmd[1].trim().toLowerCase() === "add") {
+      if (cmd[1] && cmd[1].trim().toLowerCase() === "add") {
         const loggerClass = cmd[2];
         if (!loggerClass) {
           await this.breakpoint({ error: "Missing logger type." });

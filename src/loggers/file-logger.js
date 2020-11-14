@@ -1,5 +1,5 @@
 const fs = require("fs");
-const BaseLogger = require("./base-logger");
+const CentralizedBaseLogger = require("./centralized-base-logger");
 
 function logToFile(file, a, b) {
   let log = a;
@@ -9,38 +9,29 @@ function logToFile(file, a, b) {
   fs.appendFileSync(file, `${log}\n`);
 }
 
-class FileLogger extends BaseLogger {
+class FileLogger extends CentralizedBaseLogger {
   constructor() {
     super();
     this.file = "info.log";
   }
 
-  write(a, b) {
+  doLog(type, a, b) {
     logToFile(this.file, a, b);
   }
 
-  info(a, b) {
-    logToFile(this.file, a, b);
-  }
+  _processInstruction(cmd) {
+    if (super._processInstruction(cmd)) {
+      return true;
+    }
 
-  verbose(a, b) {
-    logToFile(this.file, a, b);
-  }
+    if (cmd[0] === "set") {
+      if (cmd[1] === "filename" || cmd[1] === "file") {
+        this.file = cmd[2];
+        return true;
+      }
+    }
 
-  success(a, b) {
-    logToFile(this.file, a, b);
-  }
-
-  debug(a, b) {
-    logToFile(this.file, a, b);
-  }
-
-  warn(a, b) {
-    logToFile(this.file, a, b);
-  }
-
-  error(a, b) {
-    logToFile(this.file, a, b);
+    return false;
   }
 }
 

@@ -1,3 +1,5 @@
+const CommandsExtractor = require("../commands/helpers/commands-extractor");
+
 /* eslint-disable class-methods-use-this */
 class BaseLogger {
   constructor() {
@@ -6,7 +8,24 @@ class BaseLogger {
 
   /** @virtual */
   setInstructions(instructions) {
-    /** @todo Apply the instructions */
+    for (const line of instructions) {
+      const cmd = CommandsExtractor.extract(line);
+      if (!this._processInstruction(cmd)) {
+        /** @todo Error: invalid instruction */
+      }
+    }
+  }
+
+  /** @virtual */
+  _processInstruction(cmd) {
+    if (cmd[0] === "set") {
+      if (cmd[1] === "name") {
+        this.name = cmd[2];
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /** @abstract */
