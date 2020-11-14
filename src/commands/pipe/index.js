@@ -9,6 +9,7 @@ const { loadCommands } = require("../load-commands");
 const OpenCommand = require("../open/index");
 const CommandsExtractor = require("../helpers/commands-extractor");
 const EvalContextGenerator = require("./eval/context-generator");
+const Log = require("../../log");
 
 let commands = null;
 
@@ -203,6 +204,43 @@ class Pipe extends CommandBase {
     }
     else if (cmd[0] === ":if") {
       await this._ifCmd(current, instructions);
+    }
+    else if (cmd[0] === ":logger") {
+      if (cmd[1].trim().toLowerCase() === "add") {
+        const loggerClass = cmd[2];
+        if (!loggerClass) {
+          await this.breakpoint({ error: "Missing logger type." });
+          return true;
+        }
+
+        const loggerName = cmd[3] || null;
+
+        this.info(current);
+
+        const loggerInstructions = [];
+
+        if (loggerName) {
+          loggerInstructions.push(`set name ${loggerName}`);
+        }
+
+        while (instructions.length > 0 && instructions[0].trim().length > 0 && instructions[0].trim()[0] === "-") {
+          const instruction = instructions.shift();
+          loggerInstructions.push(instruction);
+          this.debug(` - Instruction added: ${instruction}`);
+        }
+
+        this.info("Running logger add command...");
+        await this.breakpoint();
+
+        Log.addLogger(loggerClass, instructions);
+
+        this.info("Command success");
+        await this.breakpoint();
+      }
+      else {
+        await this.breakpoint({ error: "Wrong command." });
+        return true;
+      }
     }
     else if (cmd[0] === ":open") {
       const file = cmd[1].trim();
