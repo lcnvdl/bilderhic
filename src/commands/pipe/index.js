@@ -232,7 +232,7 @@ class Pipe extends CommandBase {
         this.info("Running logger add command...");
         await this.breakpoint();
 
-        Log.addLogger(loggerClass, instructions);
+        Log.addLogger(loggerClass, loggerInstructions);
 
         this.info("Command success");
         await this.breakpoint();
