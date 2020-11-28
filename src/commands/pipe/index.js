@@ -296,7 +296,7 @@ class Pipe extends CommandBase {
   }
 
   async _evalCmd(current) {
-    this.info(current);
+    this.debug(current);
     await this.breakpoint();
 
     const condition = `(${this.environment.applyVariables(current.substr(current.indexOf(" ") + 1).trim())})`;
@@ -305,16 +305,22 @@ class Pipe extends CommandBase {
 
     const result = safeEval(condition, extraContext);
 
+    this.debug("Eval result", result);
+
     this.environment.setVariable("$eval", result);
   }
 
   async _ifCmd(current, instructions) {
-    this.info(current);
+    this.debug(current);
     const condition = `(${this.environment.applyVariables(current.substr(current.indexOf(" ") + 1).trim())})`;
 
     await this.breakpoint();
 
-    const result = safeEval(condition);
+    const extraContext = EvalContextGenerator.newContext();
+
+    const result = safeEval(condition, extraContext);
+
+    this.debug(`Condition result: ${result}`);
 
     if (!result) {
       let next = instructions.shift();

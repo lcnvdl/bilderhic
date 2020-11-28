@@ -148,6 +148,8 @@ class Environment {
       }
     });
 
+    finalStr = finalStr.split("\\[").join("[").split("\\]").join("]");
+
     /* if (finalStr.indexOf("[") !== -1 && finalStr.indexOf("]") !== -1) {
             throw new Error(`One or more undefined variables in path "${finalStr}"`);
         } */

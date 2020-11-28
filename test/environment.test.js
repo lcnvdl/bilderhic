@@ -41,5 +41,19 @@ describe("Environment", () => {
       const expected = "3/file";
       expect(result).to.equals(expected);
     });
+
+    it("non existing variables", () => {
+      const path = "[xyz]/file";
+      const result = env.applyVariables(path);
+      const expected = "/file";
+      expect(result).to.equals(expected);
+    });
+
+    it("non a variable", () => {
+      const path = "\\[xyz\\]/file";
+      const result = env.applyVariables(path);
+      const expected = "[xyz]/file";
+      expect(result).to.equals(expected);
+    });
   });
 });
