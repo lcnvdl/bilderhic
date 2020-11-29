@@ -1,0 +1,5 @@
+:if io.exists('file-exists.txt')
+:begin
+  log success File exists
+:end
+
