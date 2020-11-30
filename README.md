@@ -193,6 +193,8 @@ Stops the pipe or the process.
 ##### Usage
 ```bash
 exit [pipe]
+or
+exit [<exit code>]
 ```
 #### > sleep command
 

@@ -12,6 +12,10 @@ class ExitCommand extends CommandBase {
       return this.codes.exitPipe;
     }
 
+    if (args[0] && !Number.isNaN(args[0])) {
+      process.exit(+args[0]);
+    }
+
     return this.codes.exitProcess;
   }
 }
