@@ -108,7 +108,9 @@ class CommandBase {
   }
 
   verbose(msg) {
-    Log.verbose(msg);
+    if (this.environment.isVerboseEnabled) {
+      Log.verbose(msg);
+    }
   }
 
   debug(msg, obj) {
@@ -123,7 +125,7 @@ class CommandBase {
   }
 
   debugError(msg, obj) {
-    if (this.environment.isdebugorverbose) {
+    if (this.environment.isDebugOrVerbose) {
       if (typeof obj === "undefined") {
         Log.error(msg);
       }
@@ -134,7 +136,7 @@ class CommandBase {
   }
 
   debugSuccess(msg, obj) {
-    if (this.environment.isdebugorverbose) {
+    if (this.environment.isDebugOrVerbose) {
       if (typeof obj === "undefined") {
         Log.success(msg);
       }
