@@ -40,7 +40,12 @@ class RunCommand extends CommandBase {
           setTimeout(() => {
             if (!finished) {
               finished = true;
-              reject(new Error("Timeout"));
+              try {
+                child.kill();
+              }
+              finally {
+                reject(new Error("Timeout"));
+              }
             }
           }, tout);
         }
