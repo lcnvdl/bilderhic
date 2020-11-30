@@ -9,10 +9,17 @@ class RunCommand extends CommandBase {
       try {
         let skipArgs = 0;
         let silent = false;
+        let tout = 0;
 
         while (args && args.length > 0 && args[skipArgs] && args[skipArgs].startsWith("-")) {
           if (args[skipArgs] === "-q" || args[skipArgs] === "--quiet") {
             silent = true;
+          }
+          else if (args[skipArgs] === "-t" || args[skipArgs] === "--timeout") {
+            tout = +args[++skipArgs];
+            if (tout < 0) {
+              return this.codes.invalidArguments;
+            }
           }
           else {
             return this.codes.invalidArguments;
@@ -26,6 +33,17 @@ class RunCommand extends CommandBase {
         command = this.environment.applyVariables(command);
 
         const child = child_process.exec(command, { cwd: this.environment.cwd });
+
+        let finished = false;
+
+        if (tout && tout > 0) {
+          setTimeout(() => {
+            if (!finished) {
+              finished = true;
+              reject(new Error("Timeout"));
+            }
+          }, tout);
+        }
 
         child.stdout.setEncoding("utf8");
         child.stdout.on("data", data => {
@@ -42,7 +60,10 @@ class RunCommand extends CommandBase {
         });
 
         child.on("close", code => {
-          if (code === 0) {
+          if (finished) {
+            reject(new Error("Timeout"));
+          }
+          else if (code === 0) {
             resolve(this.codes.success);
           }
           else {

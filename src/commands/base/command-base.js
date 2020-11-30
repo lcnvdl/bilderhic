@@ -1,5 +1,5 @@
 /** @typedef {import("../../environment")} Environment */
-
+const os = require('os');
 const path = require("path");
 const inquirer = require("inquirer");
 const Log = require("../../log");
@@ -33,11 +33,23 @@ class CommandBase {
     throw new Error("Not implemented");
   }
 
+  /**
+   * @param {string} _path Path
+   */
   parsePath(_path) {
     try {
       let newPath = _path;
       newPath = this.environment.applyVariables(newPath);
-      newPath = path.resolve(this.environment.cwd, newPath);
+
+      if (newPath.startsWith("~")) {
+        const homeDir = os.homedir();
+        newPath = newPath.replace("~", homeDir);
+        newPath = path.normalize(newPath);
+      }
+      else {
+        newPath = path.resolve(this.environment.cwd, newPath);
+      }
+
       return newPath;
     }
     catch (err) {
