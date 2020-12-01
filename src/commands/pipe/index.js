@@ -301,7 +301,7 @@ class Pipe extends CommandBase {
 
     const condition = `(${this.environment.applyVariables(current.substr(current.indexOf(" ") + 1).trim())})`;
 
-    const extraContext = EvalContextGenerator.newContext();
+    const extraContext = EvalContextGenerator.newContext(this.environment);
 
     const result = safeEval(condition, extraContext);
 
@@ -316,7 +316,7 @@ class Pipe extends CommandBase {
 
     await this.breakpoint();
 
-    const extraContext = EvalContextGenerator.newContext();
+    const extraContext = EvalContextGenerator.newContext(this.environment);
 
     const result = safeEval(condition, extraContext);
 

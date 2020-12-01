@@ -1,8 +1,13 @@
 const fs = require("fs");
 
 class IoContext {
-  static exists(path) {
-    return fs.existsSync(path);
+  constructor(env) {
+    this.env = env;
+  }
+
+  exists(path) {
+    const finalPath = this.env.parsePath(path);
+    return fs.existsSync(finalPath);
   }
 }
 

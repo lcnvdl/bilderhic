@@ -1,5 +1,25 @@
+env set files 0
+
 :if io.exists('file-exists.txt')
 :begin
-  log success File exists
+  env add files
+:end
+
+cd ..
+
+:if io.exists('files/file-exists.txt')
+:begin
+  env add files
+:end
+
+:if [files] !== 2 
+:begin
+log error Test failed
+exit 1
+:end
+
+:if [files] === 2 
+:begin
+log success Test OK
 :end
 

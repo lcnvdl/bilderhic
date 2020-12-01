@@ -1,9 +1,9 @@
 const IoContext = require("./io-context");
 
 class EvalContextGenerator {
-  static newContext() {
+  static newContext(env) {
     return {
-      io: IoContext,
+      io: new IoContext(env),
     };
   }
 }
