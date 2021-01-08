@@ -96,6 +96,17 @@ class Environment {
     }
   }
 
+  setDefaultVariable(id, value) {
+    const existing = this.getVariable(id);
+    if (typeof existing === "undefined") {
+      this.variables[id] = value;
+    }
+  }
+
+  getVariable(id) {
+    return this.getVariables()[id];
+  }
+
   getVariables() {
     const variables = {};
 

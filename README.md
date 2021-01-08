@@ -37,6 +37,11 @@ It allows you to create / load / edit environment variables (inside your process
 env set <key> <value>
 ```
 
+> Set variable value (if the variable doesn't exists)
+```bash
+env set-default <key> <value>
+```
+
 > Set variable from user input
 ```bash
 env prompt <key> -m <message>

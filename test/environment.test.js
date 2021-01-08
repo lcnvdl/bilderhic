@@ -5,6 +5,100 @@ const Environment = require("../src/environment");
 let env;
 
 describe("Environment", () => {
+  describe("setDefaultVariable", () => {
+    beforeEach(() => {
+      env = new Environment(__dirname);
+      env.setVariables({
+        name: "Test",
+        version: {
+          minor: 0,
+          mayor: 1,
+          patch: 5,
+          subversion: {
+            number: 3,
+          },
+        },
+      });
+    });
+
+    it("set simple non-existing default variable", () => {
+      env.setDefaultVariable("lastName", "Good");
+      const result = env.getVariable("lastName");
+      const expected = "Good";
+      expect(result).to.equals(expected);
+    });
+
+    it("set simple existing default variable", () => {
+      env.setDefaultVariable("name", "Fail");
+      const result = env.getVariable("name");
+      const expected = "Test";
+      expect(result).to.equals(expected);
+    });
+
+    it("set chained existing variables", () => {
+      env.setDefaultVariable("version.minor", 999);
+      const result = env.getVariable("version.minor");
+      const expected = 0;
+      expect(result).to.equals(expected);
+    });
+
+    it("set chained non-existing variables", () => {
+      env.setDefaultVariable("version.xyz", 999);
+      const result = env.getVariable("version.xyz");
+      const expected = 999;
+      expect(result).to.equals(expected);
+    });
+
+    it("set chained (2 lvl) existing variables", () => {
+      env.setDefaultVariable("version.subversion.number", 123);
+      const result = env.getVariable("version.subversion.number");
+      const expected = 3;
+      expect(result).to.equals(expected);
+    });
+
+    it("set chained (2 lvl) non-existing variables", () => {
+      env.setDefaultVariable("version.subversion.xyz", 123);
+      const result = env.getVariable("version.subversion.xyz");
+      const expected = 123;
+      expect(result).to.equals(expected);
+    });
+  });
+
+  describe("getVariable", () => {
+    beforeEach(() => {
+      env = new Environment(__dirname);
+      env.setVariables({
+        name: "Test",
+        version: {
+          minor: 0,
+          mayor: 1,
+          patch: 5,
+          subversion: {
+            number: 3,
+          },
+        },
+      });
+    });
+
+    it("get simple variable", () => {
+      const result = env.getVariable("name");
+      const expected = "Test";
+      expect(result).to.equals(expected);
+    });
+
+    it("get chained variables", () => {
+      const result = env.getVariable("version.minor");
+      const expected = 0;
+      expect(result).to.equals(expected);
+    });
+
+    it("get chained (2 lvl) variables", () => {
+      const result = env.getVariable("version.subversion.number");
+      const expected = 3;
+      expect(result).to.equals(expected);
+    });
+  });
+
   describe("applyVariables", () => {
     beforeEach(() => {
       env = new Environment(__dirname);

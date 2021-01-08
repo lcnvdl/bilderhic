@@ -9,6 +9,7 @@ class EnvCommand extends CommandBase {
       this.environment.variables = {};
       return this.codes.success;
     }
+
     if (args[0] === "load") {
       const filename = this.parsePath(args[1]);
       const variables = YAML.parse(fs.readFileSync(filename, "utf8"));
@@ -16,6 +17,7 @@ class EnvCommand extends CommandBase {
       this.debug(this.environment.variables);
       return this.codes.success;
     }
+
     if (args[0] === "debug") {
       if (args.length === 1) {
         this.info(`Debug mode is ${this.environment.isDebugEnabled ? "enabled" : "disabled"}`);
@@ -34,6 +36,7 @@ class EnvCommand extends CommandBase {
 
       return this.codes.success;
     }
+
     if (args[0] === "set") {
       const key = args[1];
       const value = args[2];
@@ -43,6 +46,15 @@ class EnvCommand extends CommandBase {
       this.debug(this.environment.variables);
       return this.codes.success;
     }
+
+    if (args[0] === "set-default") {
+      const key = args[1];
+      const value = this.environment.applyVariables(args[2]);
+      this.environment.setDefaultVariable(key, value);
+      this.debug(this.environment.variables);
+      return this.codes.success;
+    }
+
     if (args[0] === "prompt") {
       const key = args[1];
       let message = null;
@@ -76,6 +88,7 @@ class EnvCommand extends CommandBase {
       this.debug(this.environment.variables);
       return this.codes.success;
     }
+
     if (args[0] === "add") {
       let parent = 0;
       if (args[3]) {
