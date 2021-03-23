@@ -273,7 +273,19 @@ log Hello word!
 #### Open
 Open a file editor
 ```bash
-:open <file>
+:open <file> [force a file format]
+```
+
+Example 1: Open a JSON file.
+```bash
+:open settings.json
+- close 
+```
+
+Example 2: Open a JSON file as a Text file.
+```bash
+:open settings.json txt
+- close 
 ```
 
 #### Eval

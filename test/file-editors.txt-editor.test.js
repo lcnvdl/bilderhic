@@ -1,4 +1,3 @@
-const path = require("path");
 const { expect } = require("chai");
 const TxtEditor = require("../src/file-editors/txt.editor");
 

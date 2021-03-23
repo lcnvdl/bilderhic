@@ -10,13 +10,23 @@ class OpenCommand extends CommandBase {
       throw new Error(`The file ${file} doesn't exists`);
     }
 
-    const editor = FileEditorsFactory.getEditor(file);
-    if (!editor) {
-      throw new Error(`Cannot find an editor for the file "${file}".`);
+    let editor;
+
+    if (args[1] && args[1] !== "") {
+      editor = FileEditorsFactory.getEditor(args[1]);
+      if (!editor) {
+        throw new Error(`Cannot find the editor "${args[1]}".`);
+      }
+    }
+    else {
+      editor = FileEditorsFactory.getEditorByFormat(file);
+      if (!editor) {
+        throw new Error(`Cannot find an editor for the file "${file}".`);
+      }
     }
 
     /** @type {string[]} */
-    const lines = args.slice(1).map(m => {
+    const lines = args.slice(2).map(m => {
       /** @type {string} */
       let final = m.trimLeft();
       if (final[0] === "-") {

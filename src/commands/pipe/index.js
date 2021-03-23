@@ -244,8 +244,13 @@ class Pipe extends CommandBase {
     }
     else if (cmd[0] === ":open") {
       const file = cmd[1].trim();
+      let openSettings = null;
 
-      const openInstructions = [file];
+      if (cmd[2] && cmd[2] !== "") {
+        openSettings = cmd[2].trim();
+      }
+
+      const openInstructions = [file, openSettings];
 
       this.info(current);
 
