@@ -104,5 +104,12 @@ describe("CommandsExtractor", () => {
       const result = CommandsExtractor.extract(line);
       expect(result).deep.equals(expected);
     });
+
+    it("should work fine - env set example", () => {
+      const line = "env set hola \"hola mundo\"";
+      const expected = ["env", "set","hola", "hola mundo"];
+      const result = CommandsExtractor.extract(line);
+      expect(result).deep.equals(expected);
+    });
   });
 });
