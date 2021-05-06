@@ -7,6 +7,7 @@ if (!args.length) {
   process.exit();
 }
 
+const moment = require("moment");
 const Environment = require("./src/environment");
 const Pipe = require("./src/commands/pipe/index");
 const Log = require("./src/log");
@@ -20,7 +21,11 @@ const settings = {
   debug: false,
 };
 
-const initialVariables = {};
+const initialVariables = {
+  timestamp: () => moment().format("YYYYMMDDHHmmss"),
+  date: format => moment().format(format ? format[0] : "YYYY-MM-DD"),
+  time: format => moment().format(format ? format[0] : "HHmmss"),
+};
 
 for (let i = 0; i < args.length; i++) {
   let a = args[i];

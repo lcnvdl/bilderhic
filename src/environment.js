@@ -99,7 +99,7 @@ class Environment {
   setDefaultVariable(id, value) {
     const existing = this.getVariable(id);
     if (typeof existing === "undefined") {
-      this.variables[id] = value;
+      this.setVariable(id, value);
     }
   }
 
@@ -111,8 +111,10 @@ class Environment {
     const variables = {};
 
     Object.keys(this.variables).forEach(k => {
-      if (typeof this.variables[k] === "object") {
-        extractVariables(this.variables[k], k).forEach(kv => {
+      const variable = this.variables[k];
+
+      if (typeof variable === "object") {
+        extractVariables(variable, k).forEach(kv => {
           variables[kv.key] = kv.value;
         });
       }
@@ -153,9 +155,31 @@ class Environment {
     }
 
     Object.keys(variables).forEach(key => {
-      while (finalStr.indexOf(`[${key}]`) !== -1) {
-        const val = variables[key];
-        finalStr = finalStr.replace(`[${key}]`, `${val}`);
+      while (finalStr.includes(`[${key}]`) || finalStr.includes(`[${key}:`)) {
+        let args = null;
+        let keyWithArgs;
+
+        if (finalStr.includes(`[${key}:`)) {
+          args = finalStr.substr(finalStr.indexOf(`[${key}:`));
+          args = args.substring(args.indexOf(":") + 1, args.indexOf("]"));
+          keyWithArgs = `${key}:${args}`;
+        }
+        else {
+          keyWithArgs = key;
+        }
+
+        let val = variables[key];
+
+        if (typeof variables[key] === "function") {
+          if (args) {
+            val = val(args);
+          }
+          else {
+            val = val();
+          }
+        }
+
+        finalStr = finalStr.replace(`[${keyWithArgs}]`, `${val}`);
       }
     });
 

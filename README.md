@@ -389,3 +389,28 @@ Multiple line command
 ```bash
 bhic -c echo Running :eol: sleep 5000 :eol: beep :eol: echo Run finished
 ```
+
+Timestamp
+```bash
+bhic -c echo My timestamp is [timestamp]
+```
+
+Date
+```bash
+bhic -c echo Today is [date]
+```
+
+Date (custom format)
+```bash
+bhic -c echo Today is [date:YYYY-MM-DD]
+```
+
+Time
+```bash
+bhic -c echo The current time is [hour]
+```
+
+Time (custom format)
+```bash
+bhic -c echo The current time is [hour:HH.MM]
+```

@@ -1,5 +1,8 @@
+/* eslint-disable class-methods-use-this */
+
 /** @typedef {import("../../environment")} Environment */
-const os = require('os');
+
+const os = require("os");
 const path = require("path");
 const inquirer = require("inquirer");
 const Log = require("../../log");

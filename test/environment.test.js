@@ -149,5 +149,21 @@ describe("Environment", () => {
       const expected = "[xyz]/file";
       expect(result).to.equals(expected);
     });
+
+    it("apply a function variable", () => {
+      env.setVariable("test", () => "testVar");
+      const path = "[test].ok";
+      const result = env.applyVariables(path);
+      const expected = "testVar.ok";
+      expect(result).to.equals(expected);
+    });
+
+    it("apply a function variable with parameters", () => {
+      env.setVariable("test", x => `testVar${x}`);
+      const path = "[test:iable].ok";
+      const result = env.applyVariables(path);
+      const expected = "testVariable.ok";
+      expect(result).to.equals(expected);
+    });
   });
 });
