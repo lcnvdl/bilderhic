@@ -172,7 +172,12 @@ class Environment {
 
         if (typeof variables[key] === "function") {
           if (args) {
-            val = val(args);
+            if (args.includes(":")) {
+              val = val(args.split(":"));
+            }
+            else {
+              val = val(args);
+            }
           }
           else {
             val = val();

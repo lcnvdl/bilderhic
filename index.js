@@ -23,8 +23,8 @@ const settings = {
 
 const initialVariables = {
   timestamp: () => moment().format("YYYYMMDDHHmmss"),
-  date: format => moment().format(format ? format[0] : "YYYY-MM-DD"),
-  time: format => moment().format(format ? format[0] : "HHmmss"),
+  date: format => moment().format(format || "YYYY-MM-DD"),
+  time: format => moment().format(format || "HHmmss"),
 };
 
 for (let i = 0; i < args.length; i++) {

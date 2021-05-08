@@ -44,6 +44,8 @@ class Pipe extends CommandBase {
     let str = content || "";
     str = str.split(":eol:").join("\n");
     str = str.split(":gt:").join(">");
+    str = str.split(":dq:").join("\"");
+    str = str.split(":sq:").join("'");
     str = str.split(":lt:").join("<");
 
     const instructions = str.split("\n")
