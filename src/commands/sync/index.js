@@ -7,6 +7,13 @@ const path = require("path");
 const CommandBase = require("../base/command-base");
 
 class SyncCommand extends CommandBase {
+  constructor(env) {
+    super(env);
+    this._fs = fs;
+    this._fse = fse;
+    this._glob = glob;
+  }
+
   async run(args) {
     if (!args || args.length === 0) {
       return this.codes.missingArguments;
@@ -20,11 +27,11 @@ class SyncCommand extends CommandBase {
     const file2 = this.parsePath(args[1]);
     const ignores = [];
 
-    if (!fs.existsSync(file2)) {
-      fs.mkdirSync(file2);
+    if (!this._fs.existsSync(file2)) {
+      this._fs.mkdirSync(file2);
     }
 
-    if (isFile(file1) || isFile(file2)) {
+    if (this.isFile(file1) || this.isFile(file2)) {
       return this.codes.invalidArguments;
     }
 
@@ -53,11 +60,11 @@ class SyncCommand extends CommandBase {
     let deleted = 0;
 
     let deleteFiles = [
-      ...(await asyncGlob(path.join(file2, "*"))),
-      ...(await asyncGlob(path.join(file2, "**/*"))),
+      ...(await this.asyncGlob(path.join(file2, "*"))),
+      ...(await this.asyncGlob(path.join(file2, "**/*"))),
     ].map(m => path.normalize(m));
 
-    fse.copySync(file1, file2, {
+    this._fse.copySync(file1, file2, {
       filter: (src, dest) => {
         const l = deleteFiles.length;
         deleteFiles = deleteFiles.filter(m => m !== path.normalize(dest));
@@ -67,15 +74,24 @@ class SyncCommand extends CommandBase {
 
         if (ignores.length > 0) {
           for (const ignore of ignores) {
-            if (src === ignore || src.endsWith(`/${ignore}`) || src.endsWith(`\\${ignore}`)) {
+            if (ignore.includes("*")) {
+              const isStart = ignore[0] === "*";
+              const strIgnore = ignore.split("*").join("").toLowerCase();
+
+              if ((isStart && src.toLowerCase().endsWith(strIgnore)) || (!isStart && src.toLowerCase().startsWith(strIgnore))) {
+                ignored++;
+                return false;
+              }
+            }
+            else if (src === ignore || src.endsWith(`/${ignore}`) || src.endsWith(`\\${ignore}`)) {
               ignored++;
               return false;
             }
           }
         }
 
-        if (fs.existsSync(dest)) {
-          if (isFile(src) && isFile(dest)) {
+        if (self._fs.existsSync(dest)) {
+          if (self.isFile(src) && self.isFile(dest)) {
             const [hash1, hash2] = [
               md5File.sync(src),
               md5File.sync(dest),
@@ -89,7 +105,7 @@ class SyncCommand extends CommandBase {
           }
         }
 
-        if (!quiet && (isFile(src) || (fs.existsSync(dest) && isFile(dest)))) {
+        if (!quiet && (this.isFile(src) || (this._fs.existsSync(dest) && this.isFile(dest)))) {
           self.info(`Copy\t${src}`);
           self.info(`  =>\t${dest}`);
           copied++;
@@ -99,14 +115,14 @@ class SyncCommand extends CommandBase {
       },
     });
 
-    deleteFiles = deleteFiles.filter(m => isFile(m));
+    deleteFiles = deleteFiles.filter(m => this.isFile(m));
 
     deleteFiles.forEach(d => {
       if (!quiet) {
-        if (fs.existsSync(d)) {
+        if (this._fs.existsSync(d)) {
           self.info(`Deleting file ${d}...`);
           deleted++;
-          fs.unlinkSync(d);
+          this._fs.unlinkSync(d);
         }
       }
     });
@@ -119,23 +135,23 @@ class SyncCommand extends CommandBase {
 
     return this.codes.success;
   }
-}
 
-function isFile(m) {
-  return fs.lstatSync(m).isFile();
-}
+  isFile(m) {
+    return this._fs.lstatSync(m).isFile();
+  }
 
-function asyncGlob(pattern) {
-  return new Promise((resolve, reject) => {
-    glob(pattern, (err, matches) => {
-      if (err) {
-        reject(err);
-      }
-      else {
-        resolve(matches);
-      }
+  asyncGlob(pattern) {
+    return new Promise((resolve, reject) => {
+      this._glob(pattern, (err, matches) => {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(matches);
+        }
+      });
     });
-  });
+  }
 }
 
 module.exports = SyncCommand;

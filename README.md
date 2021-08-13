@@ -107,7 +107,7 @@ Synchronizes (mirror mode) two folders. Only writes the diferrences between the 
 
 ##### Usage
 ```bash
-sync <source> <destination> [-i or --ignore <file or folder>] [-q or --quiet]
+sync <source> <destination> [-i or --ignore <file or folder or wildcard>] [-q or --quiet]
 ```
 
 #### > del command
@@ -122,6 +122,14 @@ del <file or folder>
 
 #### > cd command
 DOC
+
+##### Usage
+```bash
+cd
+cd <folder>
+cd --clear
+cd --back
+```
 
 #### > log command
 Writes a text to the configured loggers.
