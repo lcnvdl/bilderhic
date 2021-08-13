@@ -64,6 +64,8 @@ class SyncCommand extends CommandBase {
       ...(await this.asyncGlob(path.join(file2, "**/*"))),
     ].map(m => path.normalize(m));
 
+    let ignoredFolders = [];
+
     this._fse.copySync(file1, file2, {
       filter: (src, dest) => {
         const l = deleteFiles.length;
@@ -79,11 +81,19 @@ class SyncCommand extends CommandBase {
               const strIgnore = ignore.split("*").join("").toLowerCase();
 
               if ((isStart && src.toLowerCase().endsWith(strIgnore)) || (!isStart && src.toLowerCase().startsWith(strIgnore))) {
+                if (!self.isFile(src)) {
+                  ignoredFolders.push(dest);
+                }
+
                 ignored++;
                 return false;
               }
             }
             else if (src === ignore || src.endsWith(`/${ignore}`) || src.endsWith(`\\${ignore}`)) {
+              if (!self.isFile(src)) {
+                ignoredFolders.push(dest);
+              }
+
               ignored++;
               return false;
             }
@@ -118,12 +128,20 @@ class SyncCommand extends CommandBase {
     deleteFiles = deleteFiles.filter(m => this.isFile(m));
 
     deleteFiles.forEach(d => {
-      if (!quiet) {
-        if (this._fs.existsSync(d)) {
+      if (ignoredFolders.some(m => d.startsWith(m))) {
+        // if (!quiet) {
+        //  self.info(`The file ${d} was not deleted because the folder was ignored.`);
+        // }
+        return;
+      }
+
+      if (this._fs.existsSync(d)) {
+        if (!quiet) {
           self.info(`Deleting file ${d}...`);
-          deleted++;
-          this._fs.unlinkSync(d);
         }
+
+        deleted++;
+        this._fs.unlinkSync(d);
       }
     });
 
