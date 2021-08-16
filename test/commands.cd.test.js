@@ -18,7 +18,7 @@ describe("CdCommand", () => {
 
   it("cd to function", async () => {
     let content = null;
-    await cmd.run([m => content = m]);
+    await cmd.run([m => { content = m; }]);
 
     expect(content).to.equals(envFolder);
   });
