@@ -4,6 +4,7 @@
 const fs = require("fs");
 const path = require("path");
 const safeEval = require("safe-eval-2");
+const wildcardMatch = require("wildcard-match");
 const CommandBase = require("../base/command-base");
 const { loadCommands } = require("../load-commands");
 const OpenCommand = require("../open/index");
@@ -171,12 +172,15 @@ class Pipe extends CommandBase {
     const cmd = CommandsExtractor.extract(current);
 
     if (cmd[0] === ":each") {
+      const isRecursive = cmd[2] && cmd[2].toLowerCase() === "recursive";
+      const filter = (isRecursive ? cmd[3] : cmd[2]) || null;
+
       if (cmd[1] === "folder") {
-        await this._pipeCmdEachFolder(instructions);
+        await this._pipeCmdEachFolder(instructions, isRecursive, filter);
         return instructions.length === 0;
       }
       if (cmd[1] === "file") {
-        await this._pipeCmdEachFile(instructions);
+        await this._pipeCmdEachFile(instructions, isRecursive, filter);
         return instructions.length === 0;
       }
     }
@@ -346,9 +350,9 @@ class Pipe extends CommandBase {
     await this.breakpoint();
   }
 
-  async _pipeCmdEachFolder(instructions) {
+  async _pipeCmdEachFolder(instructions, isRecursive, filter) {
     const rootFolder = this.environment.cwd;
-    const folders = getDirectories(rootFolder);
+    const folders = getDirectories(rootFolder, isRecursive, filter);
     let subPipeId = 1;
 
     let instructionsBlock;
@@ -365,24 +369,26 @@ class Pipe extends CommandBase {
       this.debug(`Forking pipe to ${folders[i]}`);
       await this.breakpoint();
 
-      const dirname = folders[i];
+      const folderPath = folders[i];
+      const dirname = path.basename(folderPath);
 
-      const fork = this.environment.fork(dirname);
+      const fork = this.environment.fork(folderPath);
       fork.setVariables({
         $currentFolder: dirname,
-        $currentFolderPath: path.join(rootFolder, dirname),
-        $currentFolderAbsolutePath: path.resolve(path.join(rootFolder, dirname)),
+        $currentFolderPath: folderPath,
+        $currentFolderAbsolutePath: path.resolve(folderPath),
         $foldersCount: folders.length,
         $folderIndex: i,
       });
+
       const pipe = new Pipe(fork, `${this.pipeId}.${subPipeId++}`);
       await pipe.load(instructionsBlock.join("\n"));
     }
   }
 
-  async _pipeCmdEachFile(instructions) {
+  async _pipeCmdEachFile(instructions, isRecursive, filter) {
     const folder = this.environment.cwd;
-    const files = getFiles(folder);
+    const files = getFiles(folder, isRecursive, filter);
     let subPipeId = 1;
 
     let instructionsBlock;
@@ -398,26 +404,82 @@ class Pipe extends CommandBase {
     for (let i = 0; i < files.length; i++) {
       this.debug(`Forking pipe for file ${files[i]}`);
       await this.breakpoint();
+
+      const filePath = files[i];
+      const fileName = path.basename(filePath);
+      const folderPath = path.dirname(filePath);
+      const folderName = path.basename(folderPath);
+
       const fork = this.environment.fork();
       fork.setVariables({
-        $currentFile: files[i],
-        $currentFilePath: path.join(folder, files[i]),
-        $currentFileAbsolutePath: path.resolve(path.join(folder, files[i])),
+        $currentFolder: folderName,
+        $currentFolderPath: folderPath,
+        $currentFile: fileName,
+        $currentFilePath: filePath,
+        $currentFileAbsolutePath: path.resolve(filePath),
         $filesCount: files.length,
         $fileIndex: i,
       });
+
       const pipe = new Pipe(fork, `${this.pipeId}.${subPipeId++}`);
       await pipe.load(instructionsBlock.join("\n"));
     }
   }
 }
 
-function getDirectories(directory) {
-  return fs.readdirSync(directory).filter(file => fs.statSync(`${directory}/${file}`).isDirectory());
+/**
+ * Gets a list of directories.
+ * @todo Put the method into a helper class.
+ * @param {string} directory Root directory
+ * @param {string} [isRecursive] Is recursive?
+ * @param {string} [filter] Wilcard filter
+ * @returns {string[]} Directories
+ */
+function getDirectories(directory, isRecursive, filter) {
+  const folders = fs.readdirSync(directory)
+    .filter(file => fs.statSync(`${directory}/${file}`).isDirectory())
+    .map(m => path.join(directory, m));
+
+  if (isRecursive) {
+    folders.forEach(folder => {
+      folders.push(...getDirectories(folder, true));
+    });
+  }
+
+  if (filter && filter !== "*") {
+    const isMatch = wildcardMatch(filter);
+    return folders.filter(f => isMatch(f));
+  }
+
+  return folders;
 }
 
-function getFiles(directory) {
-  return fs.readdirSync(directory).filter(file => fs.statSync(`${directory}/${file}`).isFile());
+/**
+ * Gets a list of files.
+ * @todo Put the method into a helper class.
+ * @param {string} directory Root directory
+ * @param {string} [isRecursive] Is recursive?
+ * @param {string} [filter] Wilcard filter
+ * @returns {string[]} Directories
+ */
+function getFiles(directory, isRecursive, filter) {
+  const files = fs.readdirSync(directory)
+    .filter(file => fs.statSync(`${directory}/${file}`).isFile())
+    .map(m => path.join(directory, m));
+
+  if (isRecursive) {
+    const folders = getDirectories(directory, true);
+    folders.forEach(folder => {
+      files.push(...getFiles(folder, false));
+    });
+  }
+
+  if (filter && filter !== "*") {
+    const isMatch = wildcardMatch(filter);
+    return files.filter(f => isMatch(f));
+  }
+
+  return files;
 }
 
 module.exports = Pipe;

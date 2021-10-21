@@ -255,10 +255,42 @@ Open a new pipe from a line of code
 Open a new pipe from a list of folders or files
 
 ```bash
-:each folder
+:each folder [recursive] [filter]
 ```
 ```bash
-:each file
+:each file [recursive] [filter]
+```
+
+Example 1
+```bash
+:each folder
+:begin
+  echo [$currentFolder]
+:end
+```
+
+Example 2
+```bash
+:each folder recursive
+:begin
+  echo [$currentFolder]
+:end
+```
+
+Example 3
+```bash
+:each folder recursive **/node_*
+:begin
+  echo [$currentFolder]
+:end
+```
+
+Example 4
+```bash
+:each folder **/node_*
+:begin
+  echo [$currentFolder]
+:end
 ```
 
 #### Logger
