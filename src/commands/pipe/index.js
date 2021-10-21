@@ -3,7 +3,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const safeEval = require("safe-eval");
+const safeEval = require("safe-eval-2");
 const CommandBase = require("../base/command-base");
 const { loadCommands } = require("../load-commands");
 const OpenCommand = require("../open/index");
