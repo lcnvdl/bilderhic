@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+
 const fs = require("fs");
 const BaseEditor = require("./base/base-editor");
 
@@ -36,14 +38,35 @@ class TxtFileEditor extends BaseEditor {
     this.content += `\n${text}`;
   }
 
-  replace(text, replacement) {
-    while (this.content.indexOf(text) !== -1) {
-      this.content = this.content.replace(text, replacement);
+  replace(text, replacement, raw) {
+    let parsedText;
+    let parsedReplacement;
+
+    if (!raw) {
+      parsedText = this.parseText(text);
+      parsedReplacement = this.parseText(replacement);
+    }
+    else {
+      parsedText = text;
+      parsedReplacement = replacement;
+    }
+
+    while (this.content.indexOf(parsedText) !== -1) {
+      this.content = this.content.replace(parsedText, parsedReplacement);
     }
   }
 
-  replaceOne(text, replacement) {
-    this.content = this.content.replace(text, replacement);
+  replaceOne(text, replacement, raw) {
+    if (raw) {
+      this.content = this.content.replace(text, replacement);
+    }
+    else {
+      this.content = this.content.replace(this.parseText(text), this.parseText(replacement));
+    }
+  }
+
+  parseText(text) {
+    return (text || "").split(":space:").join(" ");
   }
 
   save(newFilename) {

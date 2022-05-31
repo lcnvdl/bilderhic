@@ -138,7 +138,17 @@ class OpenCommand extends CommandBase {
       else if (cmd === "replaceone") {
         //  TODO Mejorar para cuando hay espacios en las palabras a reemplazar
         const spl = line.split(" ").map(m => this.environment.applyVariables(m));
-        editor.replace(spl[0], spl[1]);
+        editor.replaceOne(spl[0], spl[1]);
+      }
+      else if (cmd === "replace:raw") {
+        //  TODO Mejorar para cuando hay espacios en las palabras a reemplazar
+        const spl = line.split(" ").map(m => this.environment.applyVariables(m));
+        editor.replace(spl[0], spl[1], true);
+      }
+      else if (cmd === "replaceone:raw") {
+        //  TODO Mejorar para cuando hay espacios en las palabras a reemplazar
+        const spl = line.split(" ").map(m => this.environment.applyVariables(m));
+        editor.replaceOne(spl[0], spl[1], true);
       }
       else {
         await this.breakpoint({ error: `Invalid command "${cmd}" for plain text editor` });

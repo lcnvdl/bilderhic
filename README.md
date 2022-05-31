@@ -396,6 +396,12 @@ Object editors: XML, HTML, JSON
 - replaceone <text> <replacement text>
 ```
 ```bash
+- replace:raw <text> <replacement text>
+```
+```bash
+- replaceone:raw <text> <replacement text>
+```
+```bash
 - save
 ```
 ```bash
