@@ -22,6 +22,8 @@ npm i -g bilderhic
 Third party licenses:
 * https://github.com/microsoft/tslib/blob/main/LICENSE.txt
 * https://github.com/isaacs/node-glob/blob/main/LICENSE
+* https://github.com/eemeli/yaml/blob/master/LICENSE
+* https://github.com/ReactiveX/rxjs/blob/master/LICENSE.txt
 
 ## Usage
 ```bash
