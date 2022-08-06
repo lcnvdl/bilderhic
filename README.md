@@ -15,6 +15,14 @@ Bilderhic includes usefull commands for edit files.
 npm i -g bilderhic
 ```
 
+## License
+
+[MIT](https://github.com/lcnvdl/bilderhic/blob/master/LICENSE)
+
+Third party licenses:
+* https://github.com/microsoft/tslib/blob/main/LICENSE.txt
+* https://github.com/isaacs/node-glob/blob/main/LICENSE
+
 ## Usage
 ```bash
 bhic <file> [-vb or --verbose] [-d or --debug]
