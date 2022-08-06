@@ -1,6 +1,8 @@
 <img src="https://lucianorasente.com/public_img/bhic.png" style="max-width:100px;width:100%;">
 
 # bilderhic
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flcnvdl%2Fbilderhic.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Flcnvdl%2Fbilderhic?ref=badge_shield)
+
 Bilderhic is a smart and simple command tool for automatization.
 
 ## How does it work?
@@ -460,3 +462,7 @@ Time (custom format)
 ```bash
 bhic -c echo The current time is [hour:HH.MM]
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flcnvdl%2Fbilderhic.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Flcnvdl%2Fbilderhic?ref=badge_large)
