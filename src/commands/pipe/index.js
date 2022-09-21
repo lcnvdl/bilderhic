@@ -388,7 +388,11 @@ class Pipe extends CommandBase {
 
   async _pipeCmdEachFile(instructions, isRecursive, filter) {
     const folder = this.environment.cwd;
-    const files = getFiles(folder, isRecursive, filter);
+    this.verbose(`CMD each file started on folder ${folder}${(isRecursive ? " recursive" : "")}`);
+
+    const files = getFiles(this, folder, isRecursive, filter);
+    this.verbose(`Files ${files.length}`);
+
     let subPipeId = 1;
 
     let instructionsBlock;
@@ -457,26 +461,38 @@ function getDirectories(directory, isRecursive, filter) {
 /**
  * Gets a list of files.
  * @todo Put the method into a helper class.
+ * @param {Pipe} pipe Current pipe
  * @param {string} directory Root directory
  * @param {string} [isRecursive] Is recursive?
  * @param {string} [filter] Wilcard filter
  * @returns {string[]} Directories
  */
-function getFiles(directory, isRecursive, filter) {
+function getFiles(pipe, directory, isRecursive, filter) {
+  pipe.verbose(`Getting files on ${directory}`);
+
   const files = fs.readdirSync(directory)
     .filter(file => fs.statSync(`${directory}/${file}`).isFile())
     .map(m => path.join(directory, m));
 
   if (isRecursive) {
     const folders = getDirectories(directory, true);
+    pipe.verbose(`Recursive folders on ${directory}: ${folders.length}`);
+
     folders.forEach(folder => {
-      files.push(...getFiles(folder, false));
+      const folderFiles = getFiles(pipe, folder, false);
+      pipe.verbose(`Files on ${folder}: ${folderFiles.length}`);
+      files.push(...folderFiles);
     });
   }
 
   if (filter && filter !== "*") {
+    pipe.verbose(`Matching files with filter ${filter}`);
     const isMatch = wildcardMatch(filter);
-    return files.filter(f => isMatch(f));
+    const finalFiles = files.filter(f => isMatch(f));
+
+    pipe.verbose(`Matching: ${finalFiles.length}`);
+
+    return finalFiles;
   }
 
   return files;
