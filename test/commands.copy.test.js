@@ -34,6 +34,11 @@ describe("CopyCommand", () => {
     expect(code).to.be.equals(cmd.codes.invalidArguments);
   });
 
+  it("should NOT fail if input file doesn't exists when ignore errors is activated", async () => {
+    const result = await cmd.run(["aqowpej2", "dstination", "--ignore-errors"]);
+    expect(result).to.be.equals(cmd.codes.success);
+  });
+
   it("should fail if input file doesn't exists", async () => {
     let error = null;
     try {

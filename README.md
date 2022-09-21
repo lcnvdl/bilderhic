@@ -107,7 +107,7 @@ Copies a file or a folder. Override the files if it exists.
 
 ##### Usage
 ```bash
-copy <from> <to> [-i or --ignore <file or folder>] [-q or --quiet]
+copy <from> <to> [-i or --ignore <file or folder>] [-q or --quiet] [-e or --ignore-errors]
 ```
 
 #### > sync command
