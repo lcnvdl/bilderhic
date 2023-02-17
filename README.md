@@ -117,7 +117,7 @@ Synchronizes (mirror mode) two folders. Only writes the diferrences between the 
 
 ##### Usage
 ```bash
-sync <source> <destination> [-i or --ignore <file or folder or wildcard>] [-q or --quiet]
+sync <source> <destination> [-i or --ignore <file or folder or wildcard>] [-q or --quiet] [-nd or --disable-delete]
 ```
 
 #### > del command

@@ -36,6 +36,7 @@ class SyncCommand extends CommandBase {
     }
 
     let quiet = false;
+    let canDelete = true;
 
     this.debug(`Sync (mirror) "${file1}" to "${file2}"`);
     await this.breakpoint();
@@ -47,6 +48,9 @@ class SyncCommand extends CommandBase {
       }
       else if (arg === "-q" || arg === "--quiet") {
         quiet = true;
+      }
+      else if (arg === "-nd" || arg === "--disable-delete") {
+        canDelete = false;
       }
       else {
         return this.codes.invalidArguments;
@@ -125,7 +129,13 @@ class SyncCommand extends CommandBase {
       },
     });
 
-    deleteFiles = deleteFiles.filter(m => this.isFile(m));
+    if (canDelete) {
+      deleteFiles = deleteFiles.filter(m => this.isFile(m));
+    }
+    else {
+      ignored += deleteFiles.length;
+      deleteFiles = [];
+    }
 
     deleteFiles.forEach(d => {
       if (ignoredFolders.some(m => d.startsWith(m))) {
