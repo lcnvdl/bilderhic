@@ -1,9 +1,7 @@
 const fs = require("fs");
-const parser = require("fast-xml-parser");
+const { XMLParser, XMLBuilder } = require("fast-xml-parser");
 const ObjectEditor = require("./base/object-editor");
 const XmlHelper = require("./helpers/xml.helper");
-
-const JsonToXmlParser = parser.j2xParser;
 
 const defaultOptions = {
   ignoreAttributes: false,
@@ -37,7 +35,8 @@ class XmlFileEditor extends ObjectEditor {
       this.object = {};
     }
     else {
-      this.object = parser.parse(content, this.options);
+      const parser = new XMLParser(this.options);
+      this.object = parser.parse(content);
     }
   }
 
@@ -48,7 +47,8 @@ class XmlFileEditor extends ObjectEditor {
       this.object = {};
     }
     else {
-      this.object = parser.parse(content, this.options);
+      const parser = new XMLParser(this.options);
+      this.object = parser.parse(content);
     }
   }
 
@@ -89,14 +89,16 @@ class XmlFileEditor extends ObjectEditor {
   }
 
   configure(key, value) {
+    let parsedValue = value;
+
     if (value === "true") {
-      value = true;
+      parsedValue = true;
     }
     else if (value === "false") {
-      value = false;
+      parsedValue = false;
     }
 
-    super.configure(key, value);
+    super.configure(key, parsedValue);
   }
 
   get(selector) {
@@ -149,6 +151,7 @@ class XmlFileEditor extends ObjectEditor {
     if (this.options.selfClosingTags) {
       let ignores = [];
 
+      // eslint-disable-next-line eqeqeq
       if (this.options.selfClosingTagsIgnores && this.options.selfClosingTagsIgnores != "") {
         ignores = this.options.selfClosingTagsIgnores.trim().split(",");
       }
@@ -160,8 +163,8 @@ class XmlFileEditor extends ObjectEditor {
   }
 
   serialize() {
-    const jsonParser = new JsonToXmlParser(this.options);
-    const finalContent = this.declaration + jsonParser.parse(this.object);
+    const builder = new XMLBuilder();
+    const finalContent = this.declaration + builder.build(this.object);
     return finalContent;
   }
 
