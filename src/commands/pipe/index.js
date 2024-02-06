@@ -11,6 +11,7 @@ const OpenCommand = require("../open/index");
 const CommandsExtractor = require("../helpers/commands-extractor");
 const EvalContextGenerator = require("./eval/context-generator");
 const Log = require("../../log");
+const AsyncHelper = require("../helpers/async-helper");
 
 let commands = null;
 
@@ -172,11 +173,38 @@ class Pipe extends CommandBase {
     const cmd = CommandsExtractor.extract(current);
 
     if (cmd[0] === ":each") {
-      const isRecursive = cmd[2] && cmd[2].toLowerCase() === "recursive";
-      const filter = (isRecursive ? cmd[3] : cmd[2]) || null;
+      let isRecursive = false;
+      let isAsync = false;
+      let asyncLimit = 0;
+
+      let filterIdx = 2;
+
+      for (let i = 2; i < cmd.length; i++) {
+        const c = cmd[i] ? cmd[i].toLowerCase() : "";
+        if (cmd[i] === "recursive") {
+          isRecursive = true;
+          ++filterIdx;
+        }
+        else if (cmd[i] === "async") {
+          isAsync = true;
+          ++filterIdx;
+        }
+        else if (cmd[i] === "limit") {
+          asyncLimit = +cmd[++i];
+          ++filterIdx;
+          ++filterIdx;
+        }
+      }
+
+      const filter = cmd[filterIdx] || null;
 
       if (cmd[1] === "folder") {
-        await this._pipeCmdEachFolder(instructions, isRecursive, filter);
+        if (isAsync) {
+          await this._pipeCmdEachFolderAsync(instructions, isRecursive, filter, asyncLimit);
+        }
+        else {
+          await this._pipeCmdEachFolder(instructions, isRecursive, filter);
+        }
         return instructions.length === 0;
       }
       if (cmd[1] === "file") {
@@ -350,6 +378,35 @@ class Pipe extends CommandBase {
     await this.breakpoint();
   }
 
+  async _pipeCmdEachFolderAsync(instructions, isRecursive, filter, asyncLimit) {
+    const rootFolder = this.environment.cwd;
+    const folders = getDirectories(rootFolder, isRecursive, filter);
+    let subPipeId = 1;
+
+    let instructionsBlock;
+
+    if (instructions[0] && instructions[0].trim().toLowerCase() === ":begin") {
+      instructionsBlock = CommandsExtractor.extractBlock(instructions);
+    }
+    else {
+      instructionsBlock = [...instructions];
+      instructions.splice(0, instructions.length);
+    }
+
+    const count = folders.length;
+
+    const argsForGenerators = [];
+
+    for (let i = 0; i < folders.length; i++) {
+      const taskArgs = { folder: folders[i], instructionsBlock, subPipeId: subPipeId++, i, count };
+      argsForGenerators.push(taskArgs);
+    }
+
+    const fns = argsForGenerators.map(m => (() => this.forkFolderPipe(m.folder, m.instructionsBlock, m.subPipeId, m.i, m.count)));
+
+    await AsyncHelper.waitForAllWithLimit(fns, asyncLimit);
+  }
+
   async _pipeCmdEachFolder(instructions, isRecursive, filter) {
     const rootFolder = this.environment.cwd;
     const folders = getDirectories(rootFolder, isRecursive, filter);
@@ -365,25 +422,31 @@ class Pipe extends CommandBase {
       instructions.splice(0, instructions.length);
     }
 
-    for (let i = 0; i < folders.length; i++) {
-      this.debug(`Forking pipe to ${folders[i]}`);
-      await this.breakpoint();
+    const count = folders.length;
 
-      const folderPath = folders[i];
-      const dirname = path.basename(folderPath);
-
-      const fork = this.environment.fork(folderPath);
-      fork.setVariables({
-        $currentFolder: dirname,
-        $currentFolderPath: folderPath,
-        $currentFolderAbsolutePath: path.resolve(folderPath),
-        $foldersCount: folders.length,
-        $folderIndex: i,
-      });
-
-      const pipe = new Pipe(fork, `${this.pipeId}.${subPipeId++}`);
-      await pipe.load(instructionsBlock.join("\n"));
+    for (let i = 0; i < count; i++) {
+      await this.forkFolderPipe(folders[i], instructionsBlock, subPipeId++, i, count);
     }
+  }
+
+  async forkFolderPipe(folder, instructionsBlock, subPipeId, i, count) {
+    this.debug(`Forking pipe to ${folder}`);
+    await this.breakpoint();
+
+    const folderPath = folder;
+    const dirname = path.basename(folderPath);
+
+    const fork = this.environment.fork(folderPath);
+    fork.setVariables({
+      $currentFolder: dirname,
+      $currentFolderPath: folderPath,
+      $currentFolderAbsolutePath: path.resolve(folderPath),
+      $foldersCount: count,
+      $folderIndex: i,
+    });
+
+    const pipe = new Pipe(fork, `${this.pipeId}.${subPipeId}`);
+    await pipe.load(instructionsBlock.join("\n"));
   }
 
   async _pipeCmdEachFile(instructions, isRecursive, filter) {

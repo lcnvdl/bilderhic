@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const inquirer = require("inquirer");
 const CommandBase = require("../base/command-base");
 const DirectoryHelper = require("../helpers/directory-helper");
 const RunCommand = require("../run/index");

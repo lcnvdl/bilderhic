@@ -265,8 +265,9 @@ Open a new pipe from a line of code
 Open a new pipe from a list of folders or files
 
 ```bash
-:each folder [recursive] [filter]
+:each folder [recursive] [async [limit x]] [filter]
 ```
+
 ```bash
 :each file [recursive] [filter]
 ```
@@ -298,6 +299,22 @@ Example 3
 Example 4
 ```bash
 :each folder **/node_*
+:begin
+  echo [$currentFolder]
+:end
+```
+
+Example 5
+```bash
+:each folder async
+:begin
+  echo [$currentFolder]
+:end
+```
+
+Example 6
+```bash
+:each folder async limit 5
 :begin
   echo [$currentFolder]
 :end

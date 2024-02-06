@@ -1,5 +1,5 @@
 cd ..
-:each folder
+:each folder async limit 10
 echo Current folder: [$currentFolder]
 echo Current folder path: [$currentFolderPath]
 echo Current folder abs path: [$currentFolderAbsolutePath]
