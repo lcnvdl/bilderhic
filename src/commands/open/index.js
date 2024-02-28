@@ -30,7 +30,7 @@ class OpenCommand extends CommandBase {
       /** @type {string} */
       let final = m.trimLeft();
       if (final[0] === "-") {
-        final = final.substr(1).trimLeft();
+        final = final.substring(1).trimStart();
       }
 
       return final;
@@ -63,7 +63,12 @@ class OpenCommand extends CommandBase {
         editor.close();
       }
       else if (cmd === "save") {
-        editor.save();
+        if (line && line.trim()) {
+          editor.save(this.parsePath(line));
+        }
+        else {
+          editor.save();
+        }
       }
       else if (editor.isObjectEditor) {
         if (cmd === "set") {

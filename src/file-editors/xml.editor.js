@@ -6,6 +6,8 @@ const XmlHelper = require("./helpers/xml.helper");
 const defaultOptions = {
   ignoreAttributes: false,
   format: true,
+  // attributeNamePrefix: "@_",
+  // preserveOrder: true,
 };
 
 class XmlFileEditor extends ObjectEditor {
@@ -26,8 +28,8 @@ class XmlFileEditor extends ObjectEditor {
 
     const content = fs.readFileSync(file, "utf8");
 
-    if (content.indexOf("<?xml") !== -1) {
-      this.declaration = content.substr(content.indexOf("<?xml"));
+    if (content.includes("<?xml")) {
+      this.declaration = content.substring(content.indexOf("<?xml"));
       this.declaration = this.declaration.substr(0, this.declaration.indexOf(">") + 1);
     }
 
@@ -163,8 +165,13 @@ class XmlFileEditor extends ObjectEditor {
   }
 
   serialize() {
-    const builder = new XMLBuilder();
-    const finalContent = this.declaration + builder.build(this.object);
+    const builder = new XMLBuilder({
+      format: this.options.format,
+      // preserveOrder: true,
+      ignoreAttributes: false,
+      attributeNamePrefix: "@_",
+    });
+    const finalContent = builder.build(this.object).trim();
     return finalContent;
   }
 
