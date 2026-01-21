@@ -68,7 +68,7 @@ class SyncCommand extends CommandBase {
       ...(await this.asyncGlob(path.join(file2, "**/*"))),
     ].map(m => path.normalize(m));
 
-    let ignoredFolders = [];
+    const ignoredFolders = [];
 
     this._fse.copySync(file1, file2, {
       filter: (src, dest) => {
@@ -106,15 +106,20 @@ class SyncCommand extends CommandBase {
 
         if (self._fs.existsSync(dest)) {
           if (self.isFile(src) && self.isFile(dest)) {
-            const [hash1, hash2] = [
-              md5File.sync(src),
-              md5File.sync(dest),
-            ];
+            const srcSize = self.getFileSize(src);
+            const destSize = self.getFileSize(dest);
 
-            if (hash1 === hash2) {
-              ignored++;
-              self.debug(`The file ${src} will not be copied because has the same content as the destination.`);
-              return false;
+            if (srcSize === destSize) {
+              const [hash1, hash2] = [
+                md5File.sync(src),
+                md5File.sync(dest),
+              ];
+
+              if (hash1 === hash2) {
+                ignored++;
+                self.debug(`The file ${src} will not be copied because has the same content as the destination.`);
+                return false;
+              }
             }
           }
         }
@@ -166,6 +171,10 @@ class SyncCommand extends CommandBase {
 
   isFile(m) {
     return this._fs.lstatSync(m).isFile();
+  }
+
+  getFileSize(filePath) {
+    return this._fs.statSync(filePath).size;
   }
 
   asyncGlob(pattern) {
