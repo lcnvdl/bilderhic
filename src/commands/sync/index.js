@@ -55,7 +55,7 @@ class SyncCommand extends CommandBase {
       }
       else if (arg === "--compare-by") {
         compareBy = args[++i];
-        if (compareBy !== "hash" && compareBy !== "default" && compareBy !== "date-and-size") {
+        if (compareBy !== "hash" && compareBy !== "default" && compareBy !== "date" && compareBy !== "date-and-size") {
           return this.codes.invalidArguments;
         }
       }
@@ -178,7 +178,7 @@ class SyncCommand extends CommandBase {
     const srcSize = this.getFileSize(src);
     const destSize = this.getFileSize(dest);
 
-    if (compareBy === "date-and-size") {
+    if (compareBy === "date" || compareBy === "date-and-size") {
       if (srcSize === destSize) {
         const srcMtime = this._fs.statSync(src).mtime.getTime();
         const destMtime = this._fs.statSync(dest).mtime.getTime();

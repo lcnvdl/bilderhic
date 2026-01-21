@@ -122,7 +122,7 @@ sync <source> <destination> [-i or --ignore <file or folder or wildcard>] [-q or
 
 ##### Compare Strategies
 - `--compare-by default` or `--compare-by hash`: Compares files by size first, then by MD5 hash if sizes match (default).
-- `--compare-by date-and-size`: Compares files by size first, then by modification date if sizes match (faster, no hash computation).
+- `--compare-by date-and-size` or `--compare-by date`: Compares files by size first, then by modification date if sizes match (faster, no hash computation).
 
 ##### Examples
 ```bash
