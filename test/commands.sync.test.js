@@ -70,4 +70,32 @@ describe("SyncCommand", () => {
     // expect(f1).to.equal("folder1");
     // expect(f2).to.equal("folder2");
   });
+
+  it("should accept --compare-by hash", async () => {
+    const code = await cmd.run(["./folder1", "./folder2", "--compare-by", "hash"]);
+    expect(code).to.be.equals(cmd.codes.success);
+    expect(fseStub.copies.length).to.equal(1);
+  });
+
+  it("should accept --compare-by default", async () => {
+    const code = await cmd.run(["./folder1", "./folder2", "--compare-by", "default"]);
+    expect(code).to.be.equals(cmd.codes.success);
+    expect(fseStub.copies.length).to.equal(1);
+  });
+
+  it("should accept --compare-by date-and-size", async () => {
+    const code = await cmd.run(["./folder1", "./folder2", "--compare-by", "date-and-size"]);
+    expect(code).to.be.equals(cmd.codes.success);
+    expect(fseStub.copies.length).to.equal(1);
+  });
+
+  it("should fail if --compare-by has invalid value", async () => {
+    const code = await cmd.run(["./folder1", "./folder2", "--compare-by", "invalid"]);
+    expect(code).to.be.equals(cmd.codes.invalidArguments);
+  });
+
+  it("should fail if --compare-by is missing value", async () => {
+    const code = await cmd.run(["./folder1", "./folder2", "--compare-by"]);
+    expect(code).to.be.equals(cmd.codes.invalidArguments);
+  });
 });

@@ -117,7 +117,19 @@ Synchronizes (mirror mode) two folders. Only writes the diferrences between the 
 
 ##### Usage
 ```bash
-sync <source> <destination> [-i or --ignore <file or folder or wildcard>] [-q or --quiet] [-nd or --disable-delete]
+sync <source> <destination> [-i or --ignore <file or folder or wildcard>] [-q or --quiet] [-nd or --disable-delete] [--compare-by <strategy>]
+```
+
+##### Compare Strategies
+- `--compare-by default` or `--compare-by hash`: Compares files by size first, then by MD5 hash if sizes match (default).
+- `--compare-by date-and-size`: Compares files by size first, then by modification date if sizes match (faster, no hash computation).
+
+##### Examples
+```bash
+sync source dest
+sync source dest -i excludedFileOrDirectory
+sync source dest --compare-by hash
+sync source dest --compare-by date-and-size
 ```
 
 #### > del command

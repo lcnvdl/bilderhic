@@ -37,6 +37,7 @@ class SyncCommand extends CommandBase {
 
     let quiet = false;
     let canDelete = true;
+    let compareBy = "hash";
 
     this.debug(`Sync (mirror) "${file1}" to "${file2}"`);
     await this.breakpoint();
@@ -51,6 +52,12 @@ class SyncCommand extends CommandBase {
       }
       else if (arg === "-nd" || arg === "--disable-delete") {
         canDelete = false;
+      }
+      else if (arg === "--compare-by") {
+        compareBy = args[++i];
+        if (compareBy !== "hash" && compareBy !== "default" && compareBy !== "date-and-size") {
+          return this.codes.invalidArguments;
+        }
       }
       else {
         return this.codes.invalidArguments;
@@ -106,20 +113,10 @@ class SyncCommand extends CommandBase {
 
         if (self._fs.existsSync(dest)) {
           if (self.isFile(src) && self.isFile(dest)) {
-            const srcSize = self.getFileSize(src);
-            const destSize = self.getFileSize(dest);
-
-            if (srcSize === destSize) {
-              const [hash1, hash2] = [
-                md5File.sync(src),
-                md5File.sync(dest),
-              ];
-
-              if (hash1 === hash2) {
-                ignored++;
-                self.debug(`The file ${src} will not be copied because has the same content as the destination.`);
-                return false;
-              }
+            if (self.shouldSkipFile(src, dest, compareBy)) {
+              ignored++;
+              self.debug(`The file ${src} will not be copied because has the same content as the destination.`);
+              return false;
             }
           }
         }
@@ -175,6 +172,30 @@ class SyncCommand extends CommandBase {
 
   getFileSize(filePath) {
     return this._fs.statSync(filePath).size;
+  }
+
+  shouldSkipFile(src, dest, compareBy) {
+    const srcSize = this.getFileSize(src);
+    const destSize = this.getFileSize(dest);
+
+    if (compareBy === "date-and-size") {
+      if (srcSize === destSize) {
+        const srcMtime = this._fs.statSync(src).mtime.getTime();
+        const destMtime = this._fs.statSync(dest).mtime.getTime();
+        return srcMtime === destMtime;
+      }
+      return false;
+    }
+
+    // default and hash strategies
+    if (srcSize === destSize) {
+      const [hash1, hash2] = [
+        md5File.sync(src),
+        md5File.sync(dest),
+      ];
+      return hash1 === hash2;
+    }
+    return false;
   }
 
   asyncGlob(pattern) {
