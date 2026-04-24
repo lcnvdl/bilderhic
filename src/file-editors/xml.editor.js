@@ -6,6 +6,7 @@ const XmlHelper = require("./helpers/xml.helper");
 const defaultOptions = {
   ignoreAttributes: false,
   format: true,
+  attributeNamePrefix: "@_",
   // attributeNamePrefix: "@_",
   // preserveOrder: true,
 };
@@ -16,7 +17,7 @@ class XmlFileEditor extends ObjectEditor {
     this.declaration = "";
     this.object = null;
     this.file = null;
-    this.options = defaultOptions;
+    this.options = { ...defaultOptions };
   }
 
   get formats() {
@@ -33,25 +34,12 @@ class XmlFileEditor extends ObjectEditor {
       this.declaration = this.declaration.substr(0, this.declaration.indexOf(">") + 1);
     }
 
-    if (!content || content === "") {
-      this.object = {};
-    }
-    else {
-      const parser = new XMLParser(this.options);
-      this.object = parser.parse(content);
-    }
+    this.object = this._parseContent(content);
   }
 
   load(content) {
     this.file = "";
-
-    if (!content || content === "") {
-      this.object = {};
-    }
-    else {
-      const parser = new XMLParser(this.options);
-      this.object = parser.parse(content);
-    }
+    this.object = this._parseContent(content);
   }
 
   add(selector, optionalValue) {
@@ -165,12 +153,7 @@ class XmlFileEditor extends ObjectEditor {
   }
 
   serialize() {
-    const builder = new XMLBuilder({
-      format: this.options.format,
-      // preserveOrder: true,
-      ignoreAttributes: false,
-      attributeNamePrefix: "@_",
-    });
+    const builder = this._newBuilder();
     const finalContent = builder.build(this.object).trim();
     return finalContent;
   }
@@ -184,6 +167,28 @@ class XmlFileEditor extends ObjectEditor {
     if (!this.file) {
       throw new Error("Empty file");
     }
+  }
+
+  _parseContent(content) {
+    if (!content || content === "") {
+      return {};
+    }
+
+    const parser = this._newParser();
+    return parser.parse(content);
+  }
+
+  _newParser() {
+    return new XMLParser(this.options);
+  }
+
+  _newBuilder() {
+    return new XMLBuilder({
+      format: this.options.format,
+      // preserveOrder: true,
+      ignoreAttributes: this.options.ignoreAttributes,
+      attributeNamePrefix: this.options.attributeNamePrefix || "@_",
+    });
   }
 }
 
