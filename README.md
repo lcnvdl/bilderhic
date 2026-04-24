@@ -11,6 +11,8 @@ or bash / cmd commands.
 Bilderhic includes usefull commands for edit files.
 
 ## Installation
+Requires Node.js 18 or newer.
+
 ```bash
 npm i -g bilderhic
 ```
